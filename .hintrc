@@ -3,6 +3,16 @@
     "development"
   ],
   "hints": {
-    "meta-viewport": "off"
+    "meta-viewport": "off",
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "user-select",
+          "-webkit-user-drag",
+          "backdrop-filter"
+        ]
+      }
+    ]
   }
 }

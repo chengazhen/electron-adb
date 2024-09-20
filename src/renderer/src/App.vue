@@ -1,46 +1,48 @@
 <!-- src/App.vue -->
 <template>
-  <div>
-    <h1>ADB 工具</h1>
-    <div>
-      <button @click="getDevices">获取设备列表</button>
-    </div>
-    <!-- 列表项 -->
-    <div>
-      <select v-model="deviceId">
-        <option v-for="device in devices" :key="device.id" :value="device.id">{{ device.id }}</option>
-      </select>
-    </div>
-    <div>
-      <button @click="connectDevice">连接设备</button>
-    </div>
-    <div>
-      <button @click="disconnectDevice">断开连接</button>
-    </div>
-    <div>
-      <button @click="installApp">安装应用</button>
-    </div>
-    <div>
-      <button @click="uninstallApp">卸载应用</button>
-    </div>
-  </div>
+  <el-container class="adb-tool h-screen">
+    <el-header class="bg-blue-500 text-white leading-[60px]">
+      <h1 class="text-2xl font-bold text-center leading-[60px]">ADB 工具</h1>
+    </el-header>
+    <el-main class="p-5">
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <DeviceManager @device-selected="onDeviceSelected" />
+          <DeviceInfo :device-id="selectedDeviceId" />
+        </el-col>
+        <el-col :span="12">
+          <AppInstaller :device-id="selectedDeviceId" />
+        </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-const devices = ref<{
-  type: string
-  id: string
-}[]>([])
-const deviceId = ref('')
+import DeviceManager from './components/DeviceManager.vue'
+import AppInstaller from './components/AppInstaller.vue'
+import DeviceInfo from './components/DeviceInfo.vue'
 
-const getDevices = async () => {
-  devices.value = await window.api.listDevices()
+const selectedDeviceId = ref('')
+
+const onDeviceSelected = (deviceId: string) => {
+  selectedDeviceId.value = deviceId
 }
-getDevices()
-
-const connectDevice = () => { }
-const disconnectDevice = () => { }
-const installApp = () => { }
-const uninstallApp = () => { }
 </script>
+
+<style scoped>
+.adb-tool {
+  height: 100vh;
+}
+
+.el-header {
+  background-color: #409eff;
+  color: white;
+  line-height: 60px;
+}
+
+.el-main {
+  padding: 20px;
+}
+</style>

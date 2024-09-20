@@ -1,9 +1,6 @@
 @import './base.css';
 
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   background-image: url('./wavy-lines.svg');
   background-size: cover;
@@ -27,10 +24,6 @@ code {
 }
 
 #app {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   margin-bottom: 80px;
 }
 
@@ -74,16 +67,16 @@ code {
 
 .vue {
   background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
-  background-clip: text;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
 }
 
 .ts {
   background: -webkit-linear-gradient(315deg, #3178c6 45%, #f0dc4e);
-  background-clip: text;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
 }

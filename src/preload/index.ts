@@ -7,8 +7,10 @@ const api = {
   listDevices: () => ipcRenderer.invoke('list-devices'),
   connectDevice: (deviceId: string) => ipcRenderer.invoke('connectDevice', deviceId),
   disconnectDevice: () => ipcRenderer.invoke('disconnectDevice'),
-  installApp: () => ipcRenderer.invoke('installApp'),
-  uninstallApp: () => ipcRenderer.invoke('uninstallApp')
+  installApp: (apkPath: string, deviceId: string) =>
+    ipcRenderer.invoke('installApp', apkPath, deviceId),
+  uninstallApp: () => ipcRenderer.invoke('uninstallApp'),
+  getDeviceInfo: (deviceId: string) => ipcRenderer.invoke('getDeviceInfo', deviceId)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
