@@ -10,12 +10,28 @@ declare global {
       installApp: (apkPath: string, deviceId: string) => Promise<void>
       uninstallApp: () => Promise<void>
       getDeviceInfo: (deviceId: string) => Promise<{
+        batteryInfo: {
+          level: number
+          acPowered: boolean
+          usbPowered: boolean
+          wirelessPowered: boolean
+          maxChargingCurrent: number
+          maxChargingVoltage: number
+          chargeCounter: number
+          status: number
+          health: number
+          present: boolean
+          scale: number
+          voltage: number
+          temperature: number
+          technology: string
+        }
+        serialNumber: string
+        screenResolution: string
         model: string
         androidVersion: string
-        serialNumber: string
-        batteryLevel: number
-        screenResolution: string
       }>
+     
     }
   }
 }

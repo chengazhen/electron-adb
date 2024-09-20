@@ -1,7 +1,11 @@
 import { Client, Commands } from 'adb-ts'
 import { ipcMain } from 'electron'
+import path from 'path'
+
 // ADB 功能
-const client = new Client()
+const client = new Client({
+  bin:  process.platform === 'win32' ? path.join(__dirname, 'resources/platform-tools/adb.exe') : ''
+})
 
 ipcMain.handle('list-devices', async () => {
   try {
@@ -12,6 +16,7 @@ ipcMain.handle('list-devices', async () => {
     throw err
   }
 })
+
 
 // 安装应用
 ipcMain.handle('installApp', async (_, apkPath: string, deviceId: string) => {
@@ -26,30 +31,58 @@ ipcMain.handle('installApp', async (_, apkPath: string, deviceId: string) => {
 
 // 获取设备信息
 // 获取设备信息
-ipcMain.handle('getDeviceInfo', async (event, deviceId: string) => {
+ipcMain.handle('getDeviceInfo', async (_, deviceId: string) => {
   try {
-    try {
-      // const batteryLevel = await client.execDevice(deviceId, 'shell dumpsys battery | grep level');
-      // const model = await client.execDevice(deviceId, 'shell getprop ro.product.model');
-      // return {
-      //   batteryLevel: parseInt(batteryLevel.split(':')[1].trim()),
-      //   model: model.trim()
-      // }
-      const serial = await client.getSerialNo(deviceId)
-      // const batteryLevel = await client.execDevice(deviceId, 'shell dumpsys battery | grep level');
-      const batteryLevel = await client.exec('shell dumpsys battery') // Adjusted command
-      // Process batteryLevel to extract the level
-      const levelMatch = batteryLevel.match(/level:\s*(\d+)/)
-      return {
-        batteryLevel: levelMatch ? parseInt(levelMatch[1]) : null
-        // model: model.trim()
-      }
-    } catch (error) {
-      console.error('Error fetching device info:', error)
-      throw new Error('Failed to fetch device information')
+    const properties = await client.listProperties(deviceId);
+    const batteryStatus = await client.batteryStatus(deviceId) 
+    console.log(batteryStatus);
+    
+    return {
+      batteryInfo: {
+        level: batteryStatus.get('level'),
+        acPowered: batteryStatus.get('AC powered'),
+        usbPowered: batteryStatus.get('USB powered'),
+        wirelessPowered: batteryStatus.get('Wireless powered'),
+        maxChargingCurrent: batteryStatus.get('Max charging current'),
+        maxChargingVoltage: batteryStatus.get('Max charging voltage'),
+        chargeCounter: batteryStatus.get('Charge counter'),
+        status: batteryStatus.get('status'),
+        health: batteryStatus.get('health'),
+        present: batteryStatus.get('present'),
+        scale: batteryStatus.get('scale'),
+        voltage: batteryStatus.get('voltage'),
+        temperature: batteryStatus.get('temperature'),
+        technology: batteryStatus.get('technology'),
+      },
+      serialNumber: properties.get('ro.serialno'),
+      screenResolution: properties.get('ro.sf.lcd_density'),
+      model: properties.get('ro.product.model'),
+      androidVersion: properties.get('ro.build.version.release')
     }
+  } catch (error) {
+    console.error('Error fetching device info:', error)
+    throw new Error('Failed to fetch device information')
+  }
+})
+
+// 判断当前环境是否为windows
+ipcMain.handle('getPlatform', async () => {
+  try {
+    const platform = process.platform
+    return { platform }
   } catch (err) {
-    console.error('Error getting device info:', err)
+    console.error('Error checking platform:', err)
     throw err
   }
 })
+
+function getPlatform() {
+  return process.platform
+}
+
+
+
+
+// 检查是否安装了ADB
+
+

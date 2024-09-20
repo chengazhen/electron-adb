@@ -3,6 +3,9 @@
     <template #header>
       <div class="flex justify-between items-center">
         <span class="text-lg font-semibold">设备信息</span>
+        <div>
+        <el-button @click="goToBatteryDetailsPage" type="primary" size="small" :disabled="!deviceId">查看电池详细信息</el-button>
+        </div>
       </div>
     </template>
     <el-descriptions :column="1" border>
@@ -20,8 +23,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router/dist/vue-router'
 
 const props = defineProps<{
   deviceId: string
@@ -35,24 +39,38 @@ interface DeviceInfo {
   screenResolution: string
 }
 
-const deviceInfo = ref<DeviceInfo | null>(null)
+const deviceInfo = reactive<DeviceInfo>({
+  model: '',
+  androidVersion: '',
+  serialNumber: '',
+  batteryLevel: 0,
+  screenResolution: ''
+})
 
 const fetchDeviceInfo = async () => {
   if (!props.deviceId) {
-    deviceInfo.value = null
     return
   }
   try {
     // 假设我们有一个 API 来获取设备信息
     const info = await window.api.getDeviceInfo(props.deviceId)
-    deviceInfo.value = info
+    deviceInfo.model = info.model
+    deviceInfo.androidVersion = info.androidVersion
+    deviceInfo.serialNumber =info.serialNumber
+    deviceInfo.batteryLevel = info.batteryInfo.level
+    deviceInfo.screenResolution = info.screenResolution
+
     console.log(info)
   } catch (error) {
     console.error('获取设备信息失败', error)
     ElMessage.error('获取设备信息失败')
-    deviceInfo.value = null
   }
 }
 
 watch(() => props.deviceId, fetchDeviceInfo, { immediate: true })
+
+const router = useRouter()
+const goToBatteryDetailsPage = () => {
+  router.push(`/battery-details/${props.deviceId}`)
+}
 </script>
