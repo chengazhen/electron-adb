@@ -1,11 +1,8 @@
-import { Client, Commands } from 'adb-ts'
+import { Client } from 'adb-ts'
 import { ipcMain } from 'electron'
-import path from 'path'
 
 // ADB 功能
-const client = new Client({
-  bin:  process.platform === 'win32' ? path.join(__dirname, 'resources/platform-tools/adb.exe') : ''
-})
+const client = new Client()
 
 ipcMain.handle('list-devices', async () => {
   try {
@@ -76,9 +73,9 @@ ipcMain.handle('getPlatform', async () => {
   }
 })
 
-function getPlatform() {
-  return process.platform
-}
+// function getPlatform() {
+//   return process.platform
+// }
 
 
 
