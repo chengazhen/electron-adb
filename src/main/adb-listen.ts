@@ -1,4 +1,4 @@
-import { Client } from 'adb-ts'
+import { Client} from 'adb-ts'
 import { ipcMain } from 'electron'
 
 // ADB 功能
@@ -13,7 +13,6 @@ ipcMain.handle('list-devices', async () => {
     throw err
   }
 })
-
 
 // 安装应用
 ipcMain.handle('installApp', async (_, apkPath: string, deviceId: string) => {
@@ -30,10 +29,10 @@ ipcMain.handle('installApp', async (_, apkPath: string, deviceId: string) => {
 // 获取设备信息
 ipcMain.handle('getDeviceInfo', async (_, deviceId: string) => {
   try {
-    const properties = await client.listProperties(deviceId);
-    const batteryStatus = await client.batteryStatus(deviceId) 
-    console.log(batteryStatus);
-    
+    const properties = await client.listProperties(deviceId)
+    const batteryStatus = await client.batteryStatus(deviceId)
+    console.log(batteryStatus)
+
     return {
       batteryInfo: {
         level: batteryStatus.get('level'),
@@ -49,7 +48,7 @@ ipcMain.handle('getDeviceInfo', async (_, deviceId: string) => {
         scale: batteryStatus.get('scale'),
         voltage: batteryStatus.get('voltage'),
         temperature: batteryStatus.get('temperature'),
-        technology: batteryStatus.get('technology'),
+        technology: batteryStatus.get('technology')
       },
       serialNumber: properties.get('ro.serialno'),
       screenResolution: properties.get('ro.sf.lcd_density'),
@@ -73,13 +72,40 @@ ipcMain.handle('getPlatform', async () => {
   }
 })
 
-// function getPlatform() {
-//   return process.platform
-// }
+// 获取已安装应用列表
+ipcMain.handle('getInstalledApps', async (_, deviceId: string) => {
+  try {
+    const packages = await client.listPackages(deviceId)
+    return packages
+  } catch (err) {
+    console.error('Error fetching installed apps:', err)
+    throw err
+  }
+})
 
+// 获取应用信息
+ipcMain.handle('getAppInfo', async (_, deviceId: string, packageName: string) => {
+  try {
+    const appInfo = await client.shell(deviceId, `dumpsys package ${packageName}`)
+    const versionMatch = appInfo.match(/versionName=(.+)/);
+    const version = versionMatch ? versionMatch[1] : '未知';
+    const firstInstallTimeMatch =  appInfo.match(/firstInstallTime=(.+)/);
+    const firstInstallTime = firstInstallTimeMatch ? firstInstallTimeMatch[1] : '未知';
+    const lastUpdateTimeMatch = appInfo.match(/lastUpdateTime=(.+)/);
+    const lastUpdateTime = lastUpdateTimeMatch ? lastUpdateTimeMatch[1] : '未知';
 
+    
 
+    return {
+      version: version,
+      name: packageName,
+      firstInstallTime: firstInstallTime,
+      lastUpdateTime: lastUpdateTime
+    }
+  } catch (err) {
+    console.error('Error fetching app info:', err)
+    throw err
+  }
+})
 
 // 检查是否安装了ADB
-
-

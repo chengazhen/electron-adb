@@ -11,6 +11,11 @@ const routes = [
     name: 'BatteryDetails',
     component: () => import('@renderer/pages/BatteryDetails.vue'),
     props: true
+  },
+  {
+    path: '/app-management',
+    name: 'AppManagement',
+    component: () => import('@renderer/pages/AppManagement.vue')
   }
 ]
 

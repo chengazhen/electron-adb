@@ -31,7 +31,13 @@ declare global {
         model: string
         androidVersion: string
       }>
-     
+      getInstalledApps: (deviceId: string) => Promise<string[]>
+      getAppInfo: (deviceId: string, packageName: string) => Promise<{
+        version: string
+        name: string
+        firstInstallTime: string
+        lastUpdateTime: string
+      }>
     }
   }
 }

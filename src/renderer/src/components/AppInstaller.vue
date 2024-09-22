@@ -27,7 +27,7 @@
           {{ installing ? '安装中...' : '安装应用' }}
         </el-button>
         <el-button type="danger" @click="uninstallApp" :disabled="!deviceId" class="w-1/2">
-          卸载应用
+          应用管理
         </el-button>
       </el-button-group>
     </div>
@@ -37,6 +37,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router/dist/vue-router'
+
+const router = useRouter()
 
 const props = defineProps<{
   deviceId: string
@@ -76,6 +79,7 @@ const installSelectedApp = async () => {
 }
 
 const uninstallApp = async () => {
+  router.push('/app-management')
   // if (!props.deviceId) {
   //   ElMessage.warning('请先选择设备')
   //   return
