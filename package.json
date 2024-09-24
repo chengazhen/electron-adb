@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "adb-ts": "^6.0.0",
     "adbkit": "^2.11.1",
+    "electron-conf": "^1.2.1",
     "electron-updater": "^6.1.7",
     "element-plus": "^2.8.3",
     "vue-router": "^4.4.5",

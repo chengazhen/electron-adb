@@ -5,6 +5,9 @@ import { promisify } from 'util'
 import fs from 'fs'
 import path from 'path'
 import bin from '../../resources/platform-tools/adb.exe?asset&asarUnpack'
+import { Conf } from 'electron-conf/main'
+const conf = new Conf()
+
 
 const execAsync = promisify(exec)
 
@@ -117,12 +120,14 @@ ipcMain.handle('getAppInfo', async (_, deviceId: string, packageName: string) =>
   }
 })
 
-// 检查是否安装了ADB
 
 // 获取APK图标
-ipcMain.handle('get-apk-icon', async (event, deviceId, packageName) => {
+ipcMain.handle('get-apk-icon', async (_, deviceId, packageName) => {
   try {
-  
+    const cachedIcon = conf.get(`${deviceId}_${packageName}_icon`)
+    if (cachedIcon) {
+      return cachedIcon
+    }
     // 获取APK路径
     const { stdout: apkPath } = await execAsync(`adb -s ${deviceId} shell pm path ${packageName}`)
     const trimmedApkPath = apkPath.trim().replace('package:', '')
@@ -154,6 +159,8 @@ ipcMain.handle('get-apk-icon', async (event, deviceId, packageName) => {
     // 清理临时文件
     fs.unlinkSync(localApkPath)
     fs.unlinkSync(iconFile)
+
+    conf.set(`${deviceId}_${packageName}_icon`, iconBase64)
 
     return iconBase64
   } catch (error) {
