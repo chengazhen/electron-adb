@@ -74,7 +74,8 @@ ipcMain.handle('getDeviceInfo', async (_, deviceId: string) => {
         technology: batteryStatus.get('technology')
       },
       serialNumber: properties.get('ro.serialno'),
-      screenResolution: properties.get('ro.sf.lcd_density'),
+      screenResolution: properties.get('ro.product.display_resolution'),
+      screenSize: properties.get('ro.sf.lcd_density'),
       model: properties.get('ro.product.model'),
       androidVersion: properties.get('ro.build.version.release')
     }

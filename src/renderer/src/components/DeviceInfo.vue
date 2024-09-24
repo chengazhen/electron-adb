@@ -18,6 +18,9 @@
       <el-descriptions-item label="屏幕分辨率">{{
         deviceInfo.screenResolution
       }}</el-descriptions-item>
+      <el-descriptions-item label="屏幕尺寸">{{
+        deviceInfo.screenSize
+      }}</el-descriptions-item>
     </el-descriptions>
   </el-card>
 </template>
@@ -37,6 +40,7 @@ interface DeviceInfo {
   serialNumber: string
   batteryLevel: number
   screenResolution: string
+  screenSize: string
 }
 
 const deviceInfo = reactive<DeviceInfo>({
@@ -44,7 +48,8 @@ const deviceInfo = reactive<DeviceInfo>({
   androidVersion: '',
   serialNumber: '',
   batteryLevel: 0,
-  screenResolution: ''
+  screenResolution: '',
+  screenSize: ''
 })
 
 const fetchDeviceInfo = async () => {
@@ -59,8 +64,7 @@ const fetchDeviceInfo = async () => {
     deviceInfo.serialNumber =info.serialNumber
     deviceInfo.batteryLevel = info.batteryInfo.level
     deviceInfo.screenResolution = info.screenResolution
-
-    console.log(info)
+    deviceInfo.screenSize = info.screenSize
   } catch (error) {
     console.error('获取设备信息失败', error)
     ElMessage.error('获取设备信息失败')

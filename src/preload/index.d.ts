@@ -27,6 +27,7 @@ declare global {
         }
         serialNumber: string
         screenResolution: string
+        screenSize: string
         model: string
         androidVersion: string
       }>
