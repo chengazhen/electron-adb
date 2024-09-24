@@ -9,17 +9,15 @@
       <DeviceManager @device-selected="handleDeviceSelected" />
     </el-col>
 
-    <el-col :span="12" >
+    <el-col :span="12">
       <!-- 应用安装器 -->
       <AppInstaller :deviceId="selectedDeviceId" />
     </el-col>
 
     <el-col :span="12" class="mt-4">
       <!-- 设备信息 -->
-      <DeviceInfo :deviceId="selectedDeviceId"/>
+      <DeviceInfo :deviceId="selectedDeviceId" />
     </el-col>
-
-
   </el-row>
 </template>
 

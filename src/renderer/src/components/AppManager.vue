@@ -9,13 +9,8 @@
     <div v-if="loading" class="text-center py-4">
       <el-spinner></el-spinner>
     </div>
-    <div v-else class="app-list-container" style="height: 400px;">
-      <VirtList
-        item-key="packageName"
-        class="scroller"
-        :list="installedApps"
-        :minSize="20"
-      >
+    <div v-else class="app-list-container" style="height: 400px">
+      <VirtList item-key="packageName" class="scroller" :list="installedApps" :minSize="20">
         <template #default="{ itemData }">
           <AppItem
             :app="itemData"
@@ -33,7 +28,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import AppItem from './AppItem.vue'
-import { VirtList } from 'vue-virt-list';
+import { VirtList } from 'vue-virt-list'
 
 const props = defineProps<{
   deviceId: string
@@ -46,7 +41,7 @@ const getInstalledApps = async () => {
   loading.value = true
   try {
     const apps = await window.api.getInstalledApps(props.deviceId)
-    installedApps.value = apps.map(item => ({ packageName: item }))
+    installedApps.value = apps.map((item) => ({ packageName: item }))
     console.log(installedApps.value)
     ElMessage.success('应用列表已更新')
   } catch (error) {

@@ -15,7 +15,6 @@ import AppManager from '../components/AppManager.vue'
 
 const selectedDevice = ref('')
 
-
 const handleDeviceSelected = (deviceId: string) => {
   selectedDevice.value = deviceId
 }

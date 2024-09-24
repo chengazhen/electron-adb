@@ -6,8 +6,11 @@ import fs from 'fs'
 import path from 'path'
 import bin from '../../resources/platform-tools/adb.exe?asset&asarUnpack'
 import { Conf } from 'electron-conf/main'
-const conf = new Conf()
+import ApkReader from 'adbkit-apkreader'
+import aapt from '../../resources/aapt.exe?asset&asarUnpack'
+import AdmZip from 'adm-zip'
 
+const conf = new Conf()
 
 const execAsync = promisify(exec)
 
@@ -111,14 +114,12 @@ ipcMain.handle('getInstalledApps', async (_, deviceId: string) => {
 ipcMain.handle('getAppInfo', async (_, deviceId: string, packageName: string) => {
   try {
     const appInfo = await client.shell(deviceId, `dumpsys package ${packageName}`)
-    const versionMatch = appInfo.match(/versionName=(.+)/);
-    const version = versionMatch ? versionMatch[1] : '未知';
-    const firstInstallTimeMatch =  appInfo.match(/firstInstallTime=(.+)/);
-    const firstInstallTime = firstInstallTimeMatch ? firstInstallTimeMatch[1] : '未知';
-    const lastUpdateTimeMatch = appInfo.match(/lastUpdateTime=(.+)/);
-    const lastUpdateTime = lastUpdateTimeMatch ? lastUpdateTimeMatch[1] : '未知';
-
-    
+    const versionMatch = appInfo.match(/versionName=(.+)/)
+    const version = versionMatch ? versionMatch[1] : '未知'
+    const firstInstallTimeMatch = appInfo.match(/firstInstallTime=(.+)/)
+    const firstInstallTime = firstInstallTimeMatch ? firstInstallTimeMatch[1] : '未知'
+    const lastUpdateTimeMatch = appInfo.match(/lastUpdateTime=(.+)/)
+    const lastUpdateTime = lastUpdateTimeMatch ? lastUpdateTimeMatch[1] : '未知'
 
     return {
       version: version,
@@ -131,7 +132,6 @@ ipcMain.handle('getAppInfo', async (_, deviceId: string, packageName: string) =>
     throw err
   }
 })
-
 
 // 获取APK图标
 ipcMain.handle('get-apk-icon', async (_, deviceId, packageName) => {
@@ -150,31 +150,23 @@ ipcMain.handle('get-apk-icon', async (_, deviceId, packageName) => {
       fs.mkdirSync(tempDir, { recursive: true })
     }
     const localApkPath = path.join(tempDir, `${packageName}.apk`)
+
     await execAsync(`adb -s ${deviceId} pull ${trimmedApkPath} ${localApkPath}`)
 
-    // 使用aapt提取图标
-    const { stdout: iconInfo } = await execAsync(`aapt dump badging ${localApkPath} | grep "application-icon"`)
-    const iconMatch = iconInfo.match(/application-icon-[0-9]+:'([^']+)'/)
-    if (!iconMatch) {
-      throw new Error('无法找到应用图标')
+    const zip = new AdmZip(localApkPath)
+
+    const { stdout: aaptInfo } = await execAsync(`${aapt} dump badging ${localApkPath}`)
+    
+    const iconMatch = aaptInfo.match(/application-icon-[0-9]+:'([^']+)'/)
+    if (iconMatch) {
+      const iconPath = iconMatch[1]
+      const iconBuffer = zip.getEntry(iconPath).getData()
+      const iconBase64 = iconBuffer.toString('base64')
+      conf.set(`${deviceId}_${packageName}_icon`, iconBase64)
+      return iconBase64
     }
-    const iconPath = iconMatch[1]
 
-    // 提取图标文件
-    const iconFile = path.join(tempDir, `${packageName}_icon.png`)
-    await execAsync(`unzip -p ${localApkPath} ${iconPath} > ${iconFile}`)
-
-    // 读取图标文件并转换为Base64
-    const iconBuffer = fs.readFileSync(iconFile)
-    const iconBase64 = iconBuffer.toString('base64')
-
-    // 清理临时文件
-    fs.unlinkSync(localApkPath)
-    fs.unlinkSync(iconFile)
-
-    conf.set(`${deviceId}_${packageName}_icon`, iconBase64)
-
-    return iconBase64
+    return null
   } catch (error) {
     console.error('获取APK图标失败:', error)
     throw error

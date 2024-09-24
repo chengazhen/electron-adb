@@ -32,7 +32,10 @@ declare global {
         androidVersion: string
       }>
       getInstalledApps: (deviceId: string) => Promise<string[]>
-      getAppInfo: (deviceId: string, packageName: string) => Promise<{
+      getAppInfo: (
+        deviceId: string,
+        packageName: string
+      ) => Promise<{
         version: string
         name: string
         firstInstallTime: string

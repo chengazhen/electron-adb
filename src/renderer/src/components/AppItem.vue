@@ -30,7 +30,12 @@ const props = defineProps<{
 
 const emit = defineEmits(['uninstall'])
 
-const appInfo = ref<{ name: string, version: string, firstInstallTime: string, lastUpdateTime: string }>({ name: '', version: '', firstInstallTime: '', lastUpdateTime: '' })
+const appInfo = ref<{
+  name: string
+  version: string
+  firstInstallTime: string
+  lastUpdateTime: string
+}>({ name: '', version: '', firstInstallTime: '', lastUpdateTime: '' })
 
 async function getAppInfo() {
   try {
@@ -51,8 +56,6 @@ async function getAppIcon() {
     ElMessage.error('获取应用图标失败')
   }
 }
-
-
 
 const uninstallApp = async () => {
   // try {

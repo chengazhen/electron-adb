@@ -4,7 +4,13 @@
       <div class="flex justify-between items-center">
         <span class="text-lg font-semibold">设备信息</span>
         <div>
-        <el-button @click="goToBatteryDetailsPage" type="primary" size="small" :disabled="!deviceId">查看电池详细信息</el-button>
+          <el-button
+            @click="goToBatteryDetailsPage"
+            type="primary"
+            size="small"
+            :disabled="!deviceId"
+            >查看电池详细信息</el-button
+          >
         </div>
       </div>
     </template>
@@ -18,9 +24,7 @@
       <el-descriptions-item label="屏幕分辨率">{{
         deviceInfo.screenResolution
       }}</el-descriptions-item>
-      <el-descriptions-item label="屏幕尺寸">{{
-        deviceInfo.screenSize
-      }}</el-descriptions-item>
+      <el-descriptions-item label="屏幕尺寸">{{ deviceInfo.screenSize }}</el-descriptions-item>
     </el-descriptions>
   </el-card>
 </template>
@@ -61,7 +65,7 @@ const fetchDeviceInfo = async () => {
     const info = await window.api.getDeviceInfo(props.deviceId)
     deviceInfo.model = info.model
     deviceInfo.androidVersion = info.androidVersion
-    deviceInfo.serialNumber =info.serialNumber
+    deviceInfo.serialNumber = info.serialNumber
     deviceInfo.batteryLevel = info.batteryInfo.level
     deviceInfo.screenResolution = info.screenResolution
     deviceInfo.screenSize = info.screenSize

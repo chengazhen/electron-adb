@@ -1,14 +1,15 @@
 <template>
   <div class="p-4">
-    <el-page-header @back="goBack" title="返回" content="电池详情">
-    </el-page-header>
-    
+    <el-page-header @back="goBack" title="返回" content="电池详情"> </el-page-header>
+
     <el-card v-if="batteryInfo" class="mt-5">
       <template #header>
         <div class="flex justify-between items-center">
           <span class="text-lg font-semibold">电池详情</span>
           <div>
-            <el-button @click="fetchBatteryInfo" :loading="loading" size="small" class="mr-2">刷新</el-button>
+            <el-button @click="fetchBatteryInfo" :loading="loading" size="small" class="mr-2"
+              >刷新</el-button
+            >
           </div>
         </div>
       </template>
@@ -17,13 +18,22 @@
         <el-descriptions-item label="充电状态">{{ getChargingStatus() }}</el-descriptions-item>
         <el-descriptions-item label="电池健康">{{ getBatteryHealth() }}</el-descriptions-item>
         <el-descriptions-item label="电压">{{ batteryInfo.voltage / 1000 }}V</el-descriptions-item>
-        <el-descriptions-item label="温度">{{ (batteryInfo.temperature / 10).toFixed(1) }}°C</el-descriptions-item>
+        <el-descriptions-item label="温度"
+          >{{ (batteryInfo.temperature / 10).toFixed(1) }}°C</el-descriptions-item
+        >
         <el-descriptions-item label="技术">{{ batteryInfo.technology }}</el-descriptions-item>
-        <el-descriptions-item label="最大充电电流">{{ batteryInfo.maxChargingCurrent / 1000000 }}A</el-descriptions-item>
-        <el-descriptions-item label="最大充电电压">{{ batteryInfo.maxChargingVoltage / 1000000 }}V</el-descriptions-item>
-        <el-descriptions-item label="最大充电次数">{{ batteryInfo.maxChargingCurrent }}</el-descriptions-item>
-        <el-descriptions-item label="充电次数">{{ batteryInfo.chargeCounter }}</el-descriptions-item>
-        
+        <el-descriptions-item label="最大充电电流"
+          >{{ batteryInfo.maxChargingCurrent / 1000000 }}A</el-descriptions-item
+        >
+        <el-descriptions-item label="最大充电电压"
+          >{{ batteryInfo.maxChargingVoltage / 1000000 }}V</el-descriptions-item
+        >
+        <el-descriptions-item label="最大充电次数">{{
+          batteryInfo.maxChargingCurrent
+        }}</el-descriptions-item>
+        <el-descriptions-item label="充电次数">{{
+          batteryInfo.chargeCounter
+        }}</el-descriptions-item>
       </el-descriptions>
     </el-card>
   </div>
@@ -105,5 +115,4 @@ const router = useRouter()
 const goBack = () => {
   router.go(-1)
 }
-
 </script>
