@@ -4,11 +4,14 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import fs from 'fs'
 import path from 'path'
+import bin from '../../resources/platform-tools/adb.exe?asset&asarUnpack'
 
 const execAsync = promisify(exec)
 
 // ADB 功能
-const client = new Client()
+const client = new Client({
+  bin: process.platform === 'win32' ? bin : undefined
+})
 
 ipcMain.handle('list-devices', async () => {
   try {
