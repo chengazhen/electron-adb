@@ -57,7 +57,7 @@ const getInstalledApps = async () => {
 }
 
 const handleUninstall = (packageName: string) => {
-  installedApps.value = installedApps.value.filter(app => app.packageName !== packageName)
+  window.api.uninstallApp(props.deviceId, packageName)
 }
 
 onMounted(getInstalledApps)

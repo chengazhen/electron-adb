@@ -37,6 +37,17 @@ ipcMain.handle('installApp', async (_, apkPath: string, deviceId: string) => {
   }
 })
 
+// 卸载应用
+ipcMain.handle('uninstallApp', async (_, packageName: string, deviceId: string) => {
+  try {
+    await client.uninstall(deviceId, packageName)
+    return { success: true }
+  } catch (err) {
+    console.error('Error uninstalling app:', err)
+    throw err
+  }
+})
+
 // 获取设备信息
 // 获取设备信息
 ipcMain.handle('getDeviceInfo', async (_, deviceId: string) => {

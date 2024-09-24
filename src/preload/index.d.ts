@@ -8,7 +8,6 @@ declare global {
       connectDevice: (deviceId: string) => Promise<void>
       disconnectDevice: () => Promise<void>
       installApp: (apkPath: string, deviceId: string) => Promise<void>
-      uninstallApp: () => Promise<void>
       getDeviceInfo: (deviceId: string) => Promise<{
         batteryInfo: {
           level: number
@@ -39,6 +38,7 @@ declare global {
         lastUpdateTime: string
       }>
       getApkIcon: (deviceId: string, packageName: string) => Promise<string>
+      uninstallApp: (deviceId: string, packageName: string) => Promise<void>
     }
   }
 }
