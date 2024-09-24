@@ -142,7 +142,11 @@ ipcMain.handle('get-apk-icon', async (_, deviceId, packageName) => {
     }
     // 获取APK路径
     const { stdout: apkPath } = await execAsync(`adb -s ${deviceId} shell pm path ${packageName}`)
-    const trimmedApkPath = apkPath.trim().replace('package:', '')
+    const trimmedApkPath = apkPath.trim().replace(/^package:/, '')
+    
+    if (trimmedApkPath.startsWith('/vendor/app') || trimmedApkPath.startsWith('/system/app')) {
+      return null
+    }
 
     // 将APK文件拉取到临时目录
     const tempDir = path.join(app.getPath('temp'), 'apk-icons')
@@ -156,7 +160,11 @@ ipcMain.handle('get-apk-icon', async (_, deviceId, packageName) => {
     const zip = new AdmZip(localApkPath)
 
     const { stdout: aaptInfo } = await execAsync(`${aapt} dump badging ${localApkPath}`)
-    
+    const appNameMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
+    const appName = appNameMatch ? appNameMatch[1] : '未知'
+
+
+
     const iconMatch = aaptInfo.match(/application-icon-[0-9]+:'([^']+)'/)
     if (iconMatch) {
       const iconPath = iconMatch[1]
