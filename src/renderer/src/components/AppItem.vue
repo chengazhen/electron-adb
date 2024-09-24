@@ -2,7 +2,7 @@
   <el-card class="app-item mb-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center">
-        <el-avatar :size="50" :src="'default-icon-url'"></el-avatar>
+        <el-avatar :size="50" :src="icon || defaultIcon"></el-avatar>
         <div class="ml-4">
           <h3 class="text-lg font-semibold">{{ appInfo.name || packageName }}</h3>
           <p class="text-sm text-gray-500">{{ packageName }}</p>
@@ -21,6 +21,7 @@
 <script lang="ts" setup>
 import { ElMessage } from 'element-plus'
 import { ref, onMounted } from 'vue'
+import defaultIcon from '@renderer/assets/electron.svg'
 
 const props = defineProps<{
   packageName: string
@@ -41,6 +42,18 @@ async function getAppInfo() {
   }
 }
 
+const icon = ref('')
+async function getAppIcon() {
+  try {
+    const iconBase64 = await window.api.getApkIcon(props.deviceId, props.packageName)
+    icon.value = `data:image/png;base64,${iconBase64}`
+  } catch (error) {
+    ElMessage.error('获取应用图标失败')
+  }
+}
+
+
+
 const uninstallApp = async () => {
   // try {
   //   await window.api.uninstallApp(props.deviceId, props.packageName)
@@ -52,4 +65,5 @@ const uninstallApp = async () => {
 }
 
 onMounted(getAppInfo)
+onMounted(getAppIcon)
 </script>

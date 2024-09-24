@@ -13,7 +13,8 @@ const api = {
   getDeviceInfo: (deviceId: string) => ipcRenderer.invoke('getDeviceInfo', deviceId),
   getBatteryInfo: (deviceId: string) => ipcRenderer.invoke('getBatteryInfo', deviceId),
   getInstalledApps: (deviceId: string) => ipcRenderer.invoke('getInstalledApps', deviceId),
-  getAppInfo: (deviceId: string, packageName: string) => ipcRenderer.invoke('getAppInfo', deviceId, packageName)
+  getAppInfo: (deviceId: string, packageName: string) => ipcRenderer.invoke('getAppInfo', deviceId, packageName),
+  getApkIcon: (deviceId: string) => ipcRenderer.invoke('get-apk-icon', deviceId)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

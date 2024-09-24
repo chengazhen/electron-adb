@@ -1,5 +1,11 @@
-import { Client} from 'adb-ts'
-import { ipcMain } from 'electron'
+import { Client } from 'adb-ts'
+import { ipcMain, app } from 'electron'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import fs from 'fs'
+import path from 'path'
+
+const execAsync = promisify(exec)
 
 // ADB 功能
 const client = new Client()
@@ -109,3 +115,48 @@ ipcMain.handle('getAppInfo', async (_, deviceId: string, packageName: string) =>
 })
 
 // 检查是否安装了ADB
+
+// 获取APK图标
+ipcMain.handle('get-apk-icon', async (event, deviceId, packageName) => {
+  try {
+  
+    // 获取APK路径
+    const { stdout: apkPath } = await execAsync(`adb -s ${deviceId} shell pm path ${packageName}`)
+    const trimmedApkPath = apkPath.trim().replace('package:', '')
+
+    // 将APK文件拉取到临时目录
+    const tempDir = path.join(app.getPath('temp'), 'apk-icons')
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true })
+    }
+    const localApkPath = path.join(tempDir, `${packageName}.apk`)
+    await execAsync(`adb -s ${deviceId} pull ${trimmedApkPath} ${localApkPath}`)
+
+    // 使用aapt提取图标
+    const { stdout: iconInfo } = await execAsync(`aapt dump badging ${localApkPath} | grep "application-icon"`)
+    const iconMatch = iconInfo.match(/application-icon-[0-9]+:'([^']+)'/)
+    if (!iconMatch) {
+      throw new Error('无法找到应用图标')
+    }
+    const iconPath = iconMatch[1]
+
+    // 提取图标文件
+    const iconFile = path.join(tempDir, `${packageName}_icon.png`)
+    await execAsync(`unzip -p ${localApkPath} ${iconPath} > ${iconFile}`)
+
+    // 读取图标文件并转换为Base64
+    const iconBuffer = fs.readFileSync(iconFile)
+    const iconBase64 = iconBuffer.toString('base64')
+
+    // 清理临时文件
+    fs.unlinkSync(localApkPath)
+    fs.unlinkSync(iconFile)
+
+    return iconBase64
+  } catch (error) {
+    console.error('获取APK图标失败:', error)
+    throw error
+  }
+})
+
+// ... 其他现有的代码 ...

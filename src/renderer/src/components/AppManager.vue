@@ -18,6 +18,7 @@
       >
         <template #default="{ itemData }">
           <AppItem
+            :app="itemData"
             :packageName="itemData.packageName"
             :deviceId="deviceId"
             @uninstall="handleUninstall"

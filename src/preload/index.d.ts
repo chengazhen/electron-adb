@@ -38,6 +38,7 @@ declare global {
         firstInstallTime: string
         lastUpdateTime: string
       }>
+      getApkIcon: (deviceId: string, packageName: string) => Promise<string>
     }
   }
 }
