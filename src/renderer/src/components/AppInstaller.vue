@@ -35,16 +35,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router/dist/vue-router'
-
+import { useDeviceStore } from '../stores/deviceStore'
 const router = useRouter()
+const deviceStore = useDeviceStore()
 
-const props = defineProps<{
-  deviceId: string
-}>()
 
+const deviceId = computed(() => deviceStore.connectedDevice)
 const selectedApk = ref('')
 
 const handleApkSelect = (file) => {
@@ -58,7 +57,7 @@ const installSelectedApp = async () => {
     ElMessage.warning('请先选择APK文件')
     return
   }
-  if (!props.deviceId) {
+  if (!deviceId.value) {
     ElMessage.warning('请先选择设备')
     return
   }
@@ -69,7 +68,7 @@ const installSelectedApp = async () => {
   }
   installing.value = true
   try {
-    await window.api.installApp(selectedApk.value, props.deviceId)
+    await window.api.installApp(selectedApk.value, deviceId.value)
     ElMessage.success('应用安装成功')
     selectedApk.value = '' // Reset selected file after installation
   } catch (error) {

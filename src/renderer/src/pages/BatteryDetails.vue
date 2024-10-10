@@ -28,12 +28,12 @@
         <el-descriptions-item label="最大充电电压"
           >{{ batteryInfo.maxChargingVoltage / 1000000 }}V</el-descriptions-item
         >
-        <el-descriptions-item label="最大充电次数">{{
+        <!-- <el-descriptions-item label="最大充电次数">{{
           batteryInfo.maxChargingCurrent
         }}</el-descriptions-item>
         <el-descriptions-item label="充电次数">{{
           batteryInfo.chargeCounter
-        }}</el-descriptions-item>
+        }}</el-descriptions-item> -->
       </el-descriptions>
     </el-card>
   </div>
@@ -43,6 +43,9 @@
 import { ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router/dist/vue-router'
+import { useDeviceStore } from '../stores/deviceStore'
+
+const deviceStore = useDeviceStore()
 
 const props = defineProps<{
   deviceId: string
@@ -69,13 +72,13 @@ const batteryInfo = ref<BatteryInfo | null>(null)
 const loading = ref(false)
 
 const fetchBatteryInfo = async () => {
-  if (!props.deviceId) {
+  if (!deviceStore.connectedDevice) {
     batteryInfo.value = null
     return
   }
   loading.value = true
   try {
-    const deviceInfo = await window.api.getDeviceInfo(props.deviceId)
+    const deviceInfo = await window.api.getDeviceInfo(deviceStore.connectedDevice)
     batteryInfo.value = deviceInfo.batteryInfo
   } catch (error) {
     console.error('获取电池信息失败', error)

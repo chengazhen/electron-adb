@@ -9,8 +9,10 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-// 如果需要，可以在这里添加任何应用级的逻辑
+<script setup lang="ts">
+import { useDeviceStore } from './stores/deviceStore'
+
+useDeviceStore()
 </script>
 
 <style>

@@ -14,7 +14,7 @@
     >
       <el-option v-for="device in devices" :key="device.id" :label="device.id" :value="device.id" />
     </el-select>
-    <div class="mt-5 w-full">
+    <!-- <div class="mt-5 w-full">
       <el-button-group class="w-full">
         <el-button type="success" @click="connectDevice" :disabled="!deviceId" class="w-1/2"
           >连接设备</el-button
@@ -23,13 +23,16 @@
           >断开连接</el-button
         >
       </el-button-group>
-    </div>
+    </div> -->
   </el-card>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useDeviceStore } from '../stores/deviceStore'
+
+const deviceStore = useDeviceStore()
 
 const devices = ref<{ type: string; id: string }[]>([])
 const deviceId = ref('')
@@ -57,5 +60,6 @@ const disconnectDevice = () => {
 
 function emitDeviceSelected(deviceId: string) {
   emit('device-selected', deviceId)
+  deviceStore.setConnectedUsbDevice(deviceId)
 }
 </script>

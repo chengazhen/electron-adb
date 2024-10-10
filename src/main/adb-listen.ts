@@ -1,23 +1,16 @@
-import { Client } from 'adb-ts'
 import { ipcMain, app } from 'electron'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import fs from 'fs'
 import path from 'path'
-import bin from '../../resources/platform-tools/adb.exe?asset&asarUnpack'
 import { Conf } from 'electron-conf/main'
-import ApkReader from 'adbkit-apkreader'
+import { client } from './adb-instance'
 import aapt from '../../resources/aapt.exe?asset&asarUnpack'
 import AdmZip from 'adm-zip'
 
 const conf = new Conf()
 
 const execAsync = promisify(exec)
-
-// ADB 功能
-const client = new Client({
-  bin: process.platform === 'win32' ? bin : undefined
-})
 
 ipcMain.handle('list-devices', async () => {
   try {
@@ -50,6 +43,8 @@ ipcMain.handle('uninstallApp', async (_, packageName: string, deviceId: string) 
     throw err
   }
 })
+
+
 
 // 获取设备信息
 // 获取设备信息
