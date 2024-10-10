@@ -1,12 +1,10 @@
 <!-- src/App.vue -->
 <template>
-  <div id="app">
-    <router-view v-slot="{ Component }">
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
-  </div>
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
 </template>
 
 <script setup lang="ts">
@@ -16,5 +14,19 @@ useDeviceStore()
 </script>
 
 <style>
+#app {
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+
 /* 如果需要，可以在这里添加任何全局样式 */
 </style>

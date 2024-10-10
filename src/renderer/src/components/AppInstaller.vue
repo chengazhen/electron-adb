@@ -26,7 +26,7 @@
         >
           {{ installing ? '安装中...' : '安装应用' }}
         </el-button>
-        <el-button type="danger" @click="uninstallApp" :disabled="!deviceId" class="w-1/2">
+        <el-button type="danger" @click="uninstallApp" :disabled="true" class="w-1/2">
           应用管理
         </el-button>
       </el-button-group>

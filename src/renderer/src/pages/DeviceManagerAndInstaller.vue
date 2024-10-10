@@ -4,19 +4,20 @@
       <h1 class="text-2xl font-bold mb-4">设备管理与应用安装</h1>
     </el-col>
 
-    <el-col :span="12">
+    <el-col :span="24">
       <!-- 设备管理器 -->
       <DeviceManager @device-selected="handleDeviceSelected" />
     </el-col>
 
-    <el-col :span="12">
-      <!-- 应用安装器 -->
-      <AppInstaller :deviceId="selectedDeviceId" />
-    </el-col>
 
-    <el-col :span="12" class="mt-4">
+    <el-col :span="24" class="mt-4">
       <!-- 设备信息 -->
       <DeviceInfo :deviceId="selectedDeviceId" />
+    </el-col>
+
+    <el-col :span="24" class="mt-4">
+      <!-- 应用安装器 -->
+      <AppInstaller :deviceId="selectedDeviceId" />
     </el-col>
   </el-row>
 </template>

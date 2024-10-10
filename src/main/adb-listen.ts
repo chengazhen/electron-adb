@@ -155,8 +155,8 @@ ipcMain.handle('get-apk-icon', async (_, deviceId, packageName) => {
     const zip = new AdmZip(localApkPath)
 
     const { stdout: aaptInfo } = await execAsync(`${aapt} dump badging ${localApkPath}`)
-    const appNameMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
-    const appName = appNameMatch ? appNameMatch[1] : '未知'
+    // const appNameMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
+    // const appName = appNameMatch ? appNameMatch[1] : '未知'
 
 
 

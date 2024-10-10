@@ -42,6 +42,12 @@ const emit = defineEmits(['device-selected'])
 const getDevices = async () => {
   try {
     devices.value = await window.api.listDevices()
+    if(devices.value.length > 0) {
+      deviceId.value = devices.value[0].id
+      emitDeviceSelected(deviceId.value)
+    } else {
+      deviceId.value = ''
+    }
     ElMessage.success('设备列表已更新')
   } catch (error) {
     ElMessage.error('获取设备列表失败')
@@ -50,13 +56,7 @@ const getDevices = async () => {
 
 onMounted(getDevices)
 
-const connectDevice = () => {
-  ElMessage.info('连接设备功能待实现')
-}
 
-const disconnectDevice = () => {
-  ElMessage.info('断开连接功能待实现')
-}
 
 function emitDeviceSelected(deviceId: string) {
   emit('device-selected', deviceId)
