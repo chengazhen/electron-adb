@@ -1,13 +1,17 @@
 <template>
   <div class="p-4">
-    <el-page-header @back="goBack" title="返回" content="电池详情"> </el-page-header>
+    <el-page-header title="返回" @back="goBack">
+      <template #content>
+        <span style="color: #409eff">电池详情</span>
+      </template>
+    </el-page-header>
 
     <el-card v-if="batteryInfo" class="mt-5">
       <template #header>
         <div class="flex justify-between items-center">
           <span class="text-lg font-semibold">电池详情</span>
           <div>
-            <el-button @click="fetchBatteryInfo" :loading="loading" size="small" class="mr-2"
+            <el-button :loading="loading" size="small" class="mr-2" @click="fetchBatteryInfo"
               >刷新</el-button
             >
           </div>

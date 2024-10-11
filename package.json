@@ -28,6 +28,7 @@
     "adbkit": "^2.11.1",
     "adbkit-apkreader": "^3.2.0",
     "adm-zip": "^0.5.16",
+    "csv-parse": "^5.5.6",
     "electron-conf": "^1.2.1",
     "electron-log": "^5.2.0",
     "electron-updater": "^6.1.7",

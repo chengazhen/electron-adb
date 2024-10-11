@@ -1,5 +1,39 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 
+export type DeviceInfo = {
+  batteryInfo: {
+    level: number
+    acPowered: boolean
+    usbPowered: boolean
+    wirelessPowered: boolean
+    maxChargingCurrent: number
+    maxChargingVoltage: number
+    chargeCounter: number
+    status: number
+    health: number
+    present: boolean
+    scale: number
+    voltage: number
+    temperature: number
+    technology: string
+  }
+  serialNumber: string
+  screenResolution: string
+  screenSize: string
+  model: string
+  androidVersion: string
+  manufacturer: string
+  totalStorage: string
+  usedStorage: string
+  availableStorage: string
+  totalMemoryGB: string
+  availableMemoryGB: string
+  usedMemoryGB: string
+  marketingName: string
+  isWifiEnabled: boolean
+  currentWifi: string
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -8,29 +42,7 @@ declare global {
       connectDevice: (deviceId: string) => Promise<void>
       disconnectDevice: () => Promise<void>
       installApp: (apkPath: string, deviceId: string) => Promise<void>
-      getDeviceInfo: (deviceId: string) => Promise<{
-        batteryInfo: {
-          level: number
-          acPowered: boolean
-          usbPowered: boolean
-          wirelessPowered: boolean
-          maxChargingCurrent: number
-          maxChargingVoltage: number
-          chargeCounter: number
-          status: number
-          health: number
-          present: boolean
-          scale: number
-          voltage: number
-          temperature: number
-          technology: string
-        }
-        serialNumber: string
-        screenResolution: string
-        screenSize: string
-        model: string
-        androidVersion: string
-      }>
+      getDeviceInfo: (deviceId: string) => Promise<DeviceInfo>
       getInstalledApps: (deviceId: string) => Promise<string[]>
       getAppInfo: (
         deviceId: string,
