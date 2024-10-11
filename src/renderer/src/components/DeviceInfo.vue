@@ -47,6 +47,7 @@ interface DeviceInfo {
   screenSize: string
 }
 
+
 const deviceInfo = reactive<DeviceInfo>({
   model: '',
   androidVersion: '',
