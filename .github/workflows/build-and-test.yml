@@ -28,20 +28,28 @@ jobs:
         npm ci
         npm run postinstall
 
-    - name: Build
-      run: npm run build
-
-    - name: Run tests
-      run: npm test
+    - name: Typecheck
+      run: npm run typecheck
 
     - name: Lint
       run: npm run lint
 
+    - name: Build
+      run: npm run build
+
+    # 移除了测试步骤，因为 package.json 中没有定义测试脚本
+
     - name: Build/release Electron app
-      uses: samuelmeuli/action-electron-builder@v1
-      with:
-        github_token: ${{ secrets.token }}
-        release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      env:
+        GH_TOKEN: ${{ secrets.token }}
+      run: |
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          npm run build:win
+        elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          npm run build:mac
+        else
+          npm run build:linux
+        fi
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
