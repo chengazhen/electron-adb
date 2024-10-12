@@ -157,7 +157,7 @@ ipcMain.handle(
   'getInstalledApps',
   handleResponse(async (_, deviceId: string) => {
     const packages = await client.shell(deviceId, 'pm list packages -3')
-    return packages
+    return packages.split('\n').map((line) => line.replace('package:', ''))
   })
 )
 
@@ -201,14 +201,6 @@ ipcMain.handle(
       const apkPath = await client.shell(deviceId, `pm path ${packageName}`)
       const trimmedApkPath = apkPath.trim().replace(/^package:/, '')
 
-      if (trimmedApkPath.includes('/data/app')) {
-        return '无法获取应用图标'
-      }
-
-      if (trimmedApkPath.startsWith('/vendor/app') || trimmedApkPath.startsWith('/system/app')) {
-        return '无法获取系统应用图标'
-      }
-
       // 将APK文件拉取到临时目录
       const tempDir = path.join(app.getPath('temp'), 'apk-icons')
       if (!fs.existsSync(tempDir)) {
@@ -216,20 +208,21 @@ ipcMain.handle(
       }
       const localApkPath = path.join(tempDir, `${packageName}.apk`)
 
+      // 判断本地是否已经有了APK文件
       await execAsync(`adb -s ${deviceId} pull ${trimmedApkPath} ${localApkPath}`)
-
       const zip = new AdmZip(localApkPath)
 
       const { stdout: aaptInfo } = await execAsync(`${aapt} dump badging ${localApkPath}`)
-      const appNameMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
-      const appName = appNameMatch ? appNameMatch[1] : '未知'
+      const zhMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
+      const enMatch = aaptInfo.match(/application-label:'([^']*)'/)
+      const appName = zhMatch ? zhMatch[1] : enMatch ? enMatch[1] : '未知'
 
       const iconMatch = aaptInfo.match(/application-icon-[0-9]+:'([^']+)'/)
       if (iconMatch) {
         const iconPath = iconMatch[1]
         const iconBuffer = zip.getEntry(iconPath).getData()
         const iconBase64 = iconBuffer.toString('base64')
-        conf.set(`${deviceId}_${packageName}_icon`, iconBase64)
+        conf.set(`${deviceId}_${packageName}_icon`, { icon: iconBase64, name: appName })
         return {
           icon: iconBase64,
           name: appName

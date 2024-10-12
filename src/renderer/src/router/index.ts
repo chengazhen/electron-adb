@@ -21,12 +21,22 @@ const routes = [
     path: '/app-management',
     name: 'AppManagement',
     component: () => import('@renderer/pages/AppManagement.vue')
+  },
+  {
+    path: '/usb-debug-guide',
+    name: 'UsbDebugGuide',
+    component: () => import('@renderer/pages/UsbDebugGuide.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  console.log('beforeEach', to, from)
+  next()
 })
 
 export default router

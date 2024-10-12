@@ -1,61 +1,75 @@
 <template>
-  <el-card v-if="deviceInfo" class="mt-5">
-    <template #header>
-      <div class="flex justify-between items-center">
-        <span class="text-lg font-semibold">设备信息</span>
-        <div>
-          <el-button
-            type="primary"
-            size="small"
-            :disabled="!deviceId"
-            @click="goToBatteryDetailsPage"
-            >查看电池详细信息</el-button
-          >
-          <el-button
-            type="primary"
-            size="small"
-            :disabled="!deviceId"
-            :loading="loading"
-            @click="fetchDeviceInfo"
-          >
-            刷新
-          </el-button>
-        </div>
+  <el-row :gutter="20">
+    <el-col :span="12">
+      <div class="">
+        <span class="min-w-[80px]">制造商：</span>
+        <h1 class="text-2xl font-bold">{{ deviceInfo.manufacturer }}</h1>
       </div>
-    </template>
-    <el-descriptions :column="2" border>
-      <el-descriptions-item label="制造商">{{ deviceInfo.manufacturer }}</el-descriptions-item>
-      <el-descriptions-item label="设备型号">
-        {{ deviceInfo.marketingName }} ({{ deviceInfo.model }})
-      </el-descriptions-item>
-      <el-descriptions-item label="Android 版本">{{
-        deviceInfo.androidVersion
-      }}</el-descriptions-item>
-      <el-descriptions-item label="WiFi">
-        {{ wifiStatus }}
-      </el-descriptions-item>
-      <el-descriptions-item label="储存使用">
-        {{ deviceInfo.usedStorage }}B / {{ deviceInfo.totalStorage }}B
-      </el-descriptions-item>
-      <el-descriptions-item label="内存使用">
-        {{ deviceInfo.usedMemoryGB }}GB / {{ deviceInfo.totalMemoryGB }}GB
-      </el-descriptions-item>
-      <el-descriptions-item label="电池电量"> {{ deviceInfo.batteryLevel }}% </el-descriptions-item>
-      <el-descriptions-item label="屏幕尺寸">{{ deviceInfo.screenSize }}</el-descriptions-item>
-    </el-descriptions>
-  </el-card>
+    </el-col>
+    <el-col :span="12">
+      <div class="">
+        <span class="min-w-[80px]">设备型号：</span>
+        <h1 class="text-2xl font-bold">{{ deviceInfo.marketingName }}</h1>
+      </div>
+    </el-col>
+
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">WiFi：</span>
+        <h1 class="text-2xl font-bold">{{ wifiStatus }}</h1>
+      </div>
+    </el-col>
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">Android 版本：</span>
+        <h1 class="text-2xl font-bold">{{ deviceInfo.androidVersion }}</h1>
+      </div>
+    </el-col>
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">电池：</span>
+        <h1 class="text-2xl font-bold">{{ deviceInfo.batteryLevel }}%</h1>
+      </div>
+    </el-col>
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">屏幕尺寸：</span>
+        <h1 class="text-2xl font-bold">{{ deviceInfo.screenSize }}</h1>
+      </div>
+    </el-col>
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">内存使用：</span>
+        <h1 class="text-2xl font-bold">
+          {{ memoryUsage }}% ({{ deviceInfo.usedMemoryGB }}GB/{{ deviceInfo.totalMemoryGB }}GB)
+        </h1>
+      </div>
+    </el-col>
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">存储使用：</span>
+        <h1 class="text-2xl font-bold">
+          {{ storageUsage }}% ({{ deviceInfo.usedStorage }}B/{{ deviceInfo.totalStorage }}B)
+        </h1>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue'
-import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router/dist/vue-router'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import type { DeviceInfo } from '../../../preload/index.d'
 import { handleResponse } from '../utils/responseHandler'
+import { useDeviceStore } from '../stores/deviceStore'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { PieChart } from 'echarts/charts'
+import { GaugeChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 
-const props = defineProps<{
-  deviceId: string
-}>()
+use([CanvasRenderer, PieChart, GaugeChart, TitleComponent, TooltipComponent, LegendComponent])
+
+const deviceStore = useDeviceStore()
 
 type DeviceInfoWithoutBattery = Omit<DeviceInfo, 'batteryInfo'> & {
   batteryLevel: number
@@ -89,47 +103,62 @@ const wifiStatus = computed(() => {
 
 const loading = ref(false)
 const fetchDeviceInfo = async () => {
-  if (!props.deviceId) {
+  if (!deviceStore.connectedDevice) {
     return
   }
   loading.value = true
-  try {
-    // 假设我们有一个 API 来获取设备信息
-    const info = await handleResponse<DeviceInfo>(
-      window.api.getDeviceInfo(props.deviceId),
-      '设备信息已更新',
-      '获取设备信息失败'
-    )
-    if (info) {
-      deviceInfo.model = info.model
-      deviceInfo.androidVersion = info.androidVersion
-      deviceInfo.serialNumber = info.serialNumber
-      deviceInfo.batteryLevel = info.batteryInfo.level
-      deviceInfo.screenResolution = info.screenResolution
-      deviceInfo.screenSize = info.screenSize
-      deviceInfo.manufacturer = info.manufacturer
-      deviceInfo.totalStorage = info.totalStorage
-      deviceInfo.usedStorage = info.usedStorage
-      deviceInfo.availableStorage = info.availableStorage
-      deviceInfo.marketingName = info.marketingName
-      deviceInfo.totalMemoryGB = info.totalMemoryGB
-      deviceInfo.availableMemoryGB = info.availableMemoryGB
-      deviceInfo.usedMemoryGB = info.usedMemoryGB
-      deviceInfo.isWifiEnabled = info.isWifiEnabled
-      deviceInfo.currentWifi = info.currentWifi
-    }
-  } catch (error) {
-    console.error('获取设备信息失败', error)
-    ElMessage.error('获取设备信息失败')
-  } finally {
-    loading.value = false
+  const info = await handleResponse<DeviceInfo>(
+    window.api.getDeviceInfo(deviceStore.connectedDevice),
+    '设备信息已更新',
+    '获取设备信息失败'
+  )
+  if (info) {
+    deviceInfo.model = info.model
+    deviceInfo.androidVersion = info.androidVersion
+    deviceInfo.serialNumber = info.serialNumber
+    deviceInfo.batteryLevel = info.batteryInfo.level
+    deviceInfo.screenResolution = info.screenResolution
+    deviceInfo.screenSize = info.screenSize
+    deviceInfo.manufacturer = info.manufacturer
+    deviceInfo.totalStorage = info.totalStorage
+    deviceInfo.usedStorage = info.usedStorage
+    deviceInfo.availableStorage = info.availableStorage
+    deviceInfo.marketingName = info.marketingName
+    deviceInfo.totalMemoryGB = info.totalMemoryGB
+    deviceInfo.availableMemoryGB = info.availableMemoryGB
+    deviceInfo.usedMemoryGB = info.usedMemoryGB
+    deviceInfo.isWifiEnabled = info.isWifiEnabled
+    deviceInfo.currentWifi = info.currentWifi
   }
+  loading.value = false
 }
 
-watch(() => props.deviceId, fetchDeviceInfo, { immediate: true })
+watch(() => deviceStore.connectedDevice, fetchDeviceInfo)
 
-const router = useRouter()
-const goToBatteryDetailsPage = () => {
-  router.push(`/battery-details/${props.deviceId}`)
-}
+onMounted(() => {
+  fetchDeviceInfo()
+})
+
+const memoryUsage = computed(() => {
+  const usedMemory = parseFloat(deviceInfo.usedMemoryGB)
+  const totalMemory = parseFloat(deviceInfo.totalMemoryGB)
+  return Number(((usedMemory / totalMemory) * 100).toFixed(2))
+})
+
+const storageUsage = computed(() => {
+  const usedStorage = parseFloat(deviceInfo.usedStorage)
+  const totalStorage = parseFloat(deviceInfo.totalStorage)
+  return Number(((usedStorage / totalStorage) * 100).toFixed(2))
+})
 </script>
+
+<style scoped>
+.chart {
+  height: 300px;
+  width: 100%;
+}
+
+.custom-progress :deep(.el-progress__text) {
+  color: #ffffff; /* 将文本颜色设置为白色 */
+}
+</style>

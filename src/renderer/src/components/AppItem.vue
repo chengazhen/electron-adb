@@ -1,14 +1,17 @@
 <template>
   <el-card class="app-item mb-4">
-    <div class="flex items-center justify-between">
+    <el-skeleton v-if="loading" :rows="2" animated />
+    <div v-else class="flex items-center justify-between">
       <div class="flex items-center">
         <el-avatar :size="50" :src="icon || defaultIcon"></el-avatar>
         <div class="ml-4">
-          <h3 class="text-lg font-semibold">{{ appInfo.name || packageName }}</h3>
-          <p class="text-sm text-gray-500">{{ packageName }}</p>
-          <p class="text-sm text-gray-500">版本: {{ appInfo.version }}</p>
-          <p class="text-sm text-gray-500">安装时间: {{ appInfo.firstInstallTime }}</p>
-          <p class="text-sm text-gray-500">更新时间: {{ appInfo.lastUpdateTime }}</p>
+          <h3 class="text-lg font-semibold">{{ name || packageName }}</h3>
+          <div class="grid grid-cols-2 gap-2 text-sm text-gray-500">
+            <p>包名：{{ packageName }}</p>
+            <p>版本: {{ appInfo.version }}</p>
+            <p>安装时间: {{ appInfo.firstInstallTime }}</p>
+            <p>更新时间: {{ appInfo.lastUpdateTime }}</p>
+          </div>
         </div>
       </div>
       <div>
@@ -19,13 +22,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessage } from 'element-plus'
 import { ref, onMounted } from 'vue'
 import defaultIcon from '@renderer/assets/electron.svg'
+import { useDeviceStore } from '../stores/deviceStore'
+import { handleResponse } from '../utils/responseHandler'
+
+const deviceStore = useDeviceStore()
 
 const props = defineProps<{
   packageName: string
-  deviceId: string
 }>()
 
 // const emit = defineEmits(['uninstall'])
@@ -38,23 +43,36 @@ const appInfo = ref<{
 }>({ name: '', version: '', firstInstallTime: '', lastUpdateTime: '' })
 
 async function getAppInfo() {
-  try {
-    const info = await window.api.getAppInfo(props.deviceId, props.packageName)
+  if (!deviceStore.connectedDevice) {
+    return
+  }
+  const info = await handleResponse(
+    window.api.getAppInfo(deviceStore.connectedDevice, props.packageName),
+    '',
+    '获取应用信息失败'
+  )
+  if (info) {
     appInfo.value = info
     console.log(appInfo.value)
-  } catch (error) {
-    ElMessage.error(`获取应用信息失败：${error}`)
   }
 }
 
 const icon = ref('')
+const name = ref('')
+const loading = ref(false)
 async function getAppIcon() {
-  try {
-    const iconBase64 = await window.api.getApkIcon(props.deviceId, props.packageName)
-    icon.value = `data:image/png;base64,${iconBase64}`
-  } catch (error) {
-    ElMessage.error('获取应用图标失败')
+  loading.value = true
+  const data = await handleResponse(
+    window.api.getApkIcon(deviceStore.connectedDevice, props.packageName),
+    '',
+    '获取应用图标失败'
+  )
+  console.log(data)
+  if (data) {
+    icon.value = `data:image/png;base64,${data.icon}`
+    name.value = data.name
   }
+  loading.value = false
 }
 
 const uninstallApp = async () => {

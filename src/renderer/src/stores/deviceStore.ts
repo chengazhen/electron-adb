@@ -2,13 +2,13 @@ import { handleResponse } from '@renderer/utils/responseHandler'
 import { defineStore } from 'pinia'
 
 interface DeviceState {
-  connectedDevice: string | null
+  connectedDevice: string
   deviceList: { id: string; type: string }[]
 }
 
 export const useDeviceStore = defineStore('device', {
   state: (): DeviceState => ({
-    connectedDevice: null,
+    connectedDevice: '',
     deviceList: []
   }),
   actions: {
@@ -40,10 +40,11 @@ export const useDeviceStore = defineStore('device', {
     async disconnectDevice() {
       try {
         await window.api.disconnectDevice()
-        this.connectedDevice = null
+        this.connectedDevice = ''
       } catch (error) {
         console.error('Failed to disconnect device:', error)
       }
     }
-  }
+  },
+  persist: true // 启用持久化
 })
