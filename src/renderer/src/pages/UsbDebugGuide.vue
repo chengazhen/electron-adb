@@ -1,7 +1,11 @@
 <template>
   <div class="usb-debug-guide">
-    <h1>如何开启USB调试模式</h1>
-    <ol>
+    <el-page-header title="返回" @back="goBack">
+      <template #content>
+        <span style="color: #409eff">如何开启USB调试模式</span>
+      </template>
+    </el-page-header>
+    <ol class="mt-4">
       <li>
         打开设备的设置应用
         <el-icon><Setting /></el-icon>
@@ -30,7 +34,6 @@
     <p>
       注意：不同设备的具体步骤可能略有不同。如果遇到问题，请查阅您的设备说明书或制造商网站。(推荐去抖音搜索"如何开启USB调试"视频)
     </p>
-    <el-button @click="goBack">返回</el-button>
   </div>
 </template>
 
