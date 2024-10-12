@@ -5,24 +5,33 @@
       <!-- 左侧功能按钮 -->
       <div class="left-buttons">
         <div class="flex flex-col space-y-4">
-          <button
+          <router-link
+            to="/"
+            exact
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+            active-class="!bg-blue-500 !text-white"
           >
             <el-icon class="mr-1.5"><InfoFilled /></el-icon>
             设备信息
-          </button>
-          <button
+          </router-link>
+          <router-link
+            to="/app-management"
+            exact
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+            active-class="!bg-blue-500 !text-white"
           >
             <el-icon class="mr-1.5"><Management /></el-icon>
             应用管理
-          </button>
-          <button
+          </router-link>
+          <router-link
+            to="/advanced-features"
+            exact
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+            active-class="!bg-blue-500 !text-white"
           >
             <el-icon class="mr-1.5"><Setting /></el-icon>
             高级功能
-          </button>
+          </router-link>
         </div>
       </div>
 
