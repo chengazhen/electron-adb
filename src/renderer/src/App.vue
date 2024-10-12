@@ -18,6 +18,7 @@ useDeviceStore()
   max-width: 1000px;
   margin: 0 auto;
   overflow: hidden;
+  height: 100vh;
 }
 
 * {
@@ -25,8 +26,6 @@ useDeviceStore()
   padding: 0;
   box-sizing: border-box;
 }
-
-
 
 /* 如果需要，可以在这里添加任何全局样式 */
 </style>

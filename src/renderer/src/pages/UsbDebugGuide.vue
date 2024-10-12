@@ -5,30 +5,42 @@
         <span style="color: #409eff">如何开启USB调试模式</span>
       </template>
     </el-page-header>
-    <ol class="mt-4">
+    <ol class="mt-4" type="1">
       <li>
         打开设备的设置应用
-        <el-icon><Setting /></el-icon>
+        <el-icon>
+          <Setting />
+        </el-icon>
       </li>
       <li>
         滚动到底部，点击"关于手机"
-        <el-icon><InfoFilled /></el-icon>
+        <el-icon>
+          <InfoFilled />
+        </el-icon>
       </li>
       <li>
         找到"版本号"或"构建号"，连续点击7次
-        <el-icon><View /></el-icon>
+        <el-icon>
+          <View />
+        </el-icon>
       </li>
       <li>
         返回设置主页面，你会看到新的"开发者选项"
-        <el-icon><Tools /></el-icon>
+        <el-icon>
+          <Tools />
+        </el-icon>
       </li>
       <li>
         进入"开发者选项"，找到并启用"USB调试"
-        <el-icon><Connection /></el-icon>
+        <el-icon>
+          <Connection />
+        </el-icon>
       </li>
       <li>
         连接设备到电脑，在设备上允许USB调试<strong>(注意不能勾选"仅充电")</strong>
-        <el-icon><Link /></el-icon>
+        <el-icon>
+          <Link />
+        </el-icon>
       </li>
     </ol>
     <p>
@@ -50,7 +62,6 @@ const goBack = () => {
 
 <style scoped>
 .usb-debug-guide {
-  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -63,7 +74,7 @@ h1 {
 }
 
 ol {
-  padding-left: 20px;
+  counter-reset: item;
 }
 
 li {
@@ -71,6 +82,11 @@ li {
   line-height: 1.5;
   display: flex;
   align-items: center;
+}
+
+ol li:before {
+  content: counter(item) '. ';
+  counter-increment: item;
 }
 
 .el-icon {
