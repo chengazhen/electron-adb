@@ -1,8 +1,8 @@
 @import './base.css';
 
 body {
-  background-image: url('./wavy-lines.svg');
-  background-size: cover;
+  background-image: url('./bg.webp');
+  background-size: contain;
   user-select: none;
 }
 

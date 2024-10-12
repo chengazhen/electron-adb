@@ -19,7 +19,6 @@ useDeviceStore()
   margin: 0 auto;
   overflow: hidden;
   height: 100vh;
-  background-color: white;
 }
 
 * {

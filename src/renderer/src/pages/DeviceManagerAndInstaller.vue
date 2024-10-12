@@ -27,7 +27,7 @@
       </div>
 
       <!-- 中央展示区 -->
-      <div class="center-display">
+      <div class="center-display invisible">
         <DeviceInfo :device-id="deviceId" />
       </div>
 
