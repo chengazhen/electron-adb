@@ -31,6 +31,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useDeviceStore } from '../stores/deviceStore'
+import { handleResponse } from '../utils/responseHandler'
 
 const deviceStore = useDeviceStore()
 
@@ -40,23 +41,24 @@ const deviceId = ref('')
 const emit = defineEmits(['device-selected'])
 
 const getDevices = async () => {
-  try {
-    devices.value = await window.api.listDevices()
-    if(devices.value.length > 0) {
+  const result = await handleResponse(
+    window.api.listDevices(),
+    '设备列表已更新',
+    '获取设备列表失败'
+  )
+  if (result) {
+    devices.value = result
+    if (devices.value.length > 0) {
       deviceId.value = devices.value[0].id
       emitDeviceSelected(deviceId.value)
     } else {
       deviceId.value = ''
     }
     ElMessage.success('设备列表已更新')
-  } catch (error) {
-    ElMessage.error('获取设备列表失败')
   }
 }
 
 onMounted(getDevices)
-
-
 
 function emitDeviceSelected(deviceId: string) {
   emit('device-selected', deviceId)

@@ -34,11 +34,17 @@ export type DeviceInfo = {
   currentWifi: string
 }
 
+interface ResponseData<T> {
+  success: boolean
+  data: T | null
+  error: string | null
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
     api: {
-      listDevices: () => Promise<{ type: string; id: string }[]>
+      listDevices: () => Promise<ResponseData<{ type: string; id: string }[]>>
       connectDevice: (deviceId: string) => Promise<void>
       disconnectDevice: () => Promise<void>
       installApp: (apkPath: string, deviceId: string) => Promise<void>

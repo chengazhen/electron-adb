@@ -28,7 +28,7 @@ const props = defineProps<{
   deviceId: string
 }>()
 
-const emit = defineEmits(['uninstall'])
+// const emit = defineEmits(['uninstall'])
 
 const appInfo = ref<{
   name: string
