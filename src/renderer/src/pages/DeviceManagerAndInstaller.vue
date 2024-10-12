@@ -1,64 +1,116 @@
 <template>
-  <el-scrollbar height="100%">
-    <div class="device-manager-and-installer">
-      <el-row :gutter="20">
-        <el-col :span="24">
-          <h1 class="text-2xl font-bold mb-4">设备管理与应用安装</h1>
-        </el-col>
+  <div class="device-manager-and-installer">
+    <!-- 主要内容区 -->
+    <div class="main-content">
+      <!-- 左侧功能按钮 -->
+      <div class="left-buttons">
+        <div class="flex flex-col space-y-4">
+          <button
+            class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+          >
+            <el-icon class="mr-1.5"><InfoFilled /></el-icon>
+            设备信息
+          </button>
+          <button
+            class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+          >
+            <el-icon class="mr-1.5"><Management /></el-icon>
+            应用管理
+          </button>
+          <button
+            class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+          >
+            <el-icon class="mr-1.5"><Setting /></el-icon>
+            高级功能
+          </button>
+        </div>
+      </div>
 
-        <el-col :span="24">
-          <!-- 设备管理器 -->
-          <DeviceManager @device-selected="handleDeviceSelected" />
-        </el-col>
+      <!-- 中央展示区 -->
+      <div class="center-display">
+        <DeviceInfo :device-id="deviceId" />
+      </div>
 
-        <el-col :span="24" class="mt-4">
-          <!-- 设备信息 -->
-          <DeviceInfo :device-id="selectedDeviceId" />
-        </el-col>
-
-        <el-col :span="24" class="mt-4">
-          <!-- 应用安装器 -->
-          <AppInstaller :device-id="selectedDeviceId" />
-        </el-col>
-      </el-row>
-
-      <el-button class="usb-debug-guide-btn" @click="goToUsbDebugGuide">
-        如何开启USB调试模式？
-      </el-button>
+      <!-- 底部信息栏 -->
+      <!-- <div class="bottom-info">
+        <el-button type="primary">我真牛逼</el-button>
+      </div> -->
     </div>
-  </el-scrollbar>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import DeviceManager from '@renderer/components/DeviceManager.vue'
-import DeviceInfo from '@renderer/components/DeviceInfo.vue'
-import AppInstaller from '@renderer/components/AppInstaller.vue'
-import { ElButton, ElScrollbar } from 'element-plus'
+import DeviceInfo from '../components/DeviceInfo.vue'
+import { InfoFilled, Management, Setting } from '@element-plus/icons-vue'
 
-const router = useRouter()
-const selectedDeviceId = ref('')
-
-const handleDeviceSelected = (deviceId: string) => {
-  selectedDeviceId.value = deviceId
-}
-
-const goToUsbDebugGuide = () => {
-  router.push('/usb-debug-guide')
-}
+const deviceId = ref('')
 </script>
 
 <style scoped>
 .device-manager-and-installer {
-  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.time {
+  color: white;
+  font-size: 18px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
   position: relative;
 }
 
-.usb-debug-guide-btn {
+.left-buttons {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.function-btn {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center-display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.car-image {
+  max-width: 80%;
+  max-height: 60vh;
+  object-fit: contain;
+}
+
+.pagination {
+  margin-top: 20px;
+}
+
+.bottom-info {
   position: absolute;
-  top: 20px;
+  bottom: 20px;
+  left: 20px;
   right: 20px;
-  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
