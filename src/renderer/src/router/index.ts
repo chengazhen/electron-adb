@@ -7,6 +7,11 @@ const routes = [
     component: () => import('@renderer/pages/DeviceManagerAndInstaller.vue')
   },
   {
+    path: '/device-manager',
+    name: 'DeviceManager',
+    component: () => import('@renderer/pages/PageDeviceManager.vue')
+  },
+  {
     path: '/battery-details/:deviceId',
     name: 'BatteryDetails',
     component: () => import('@renderer/pages/BatteryDetails.vue'),

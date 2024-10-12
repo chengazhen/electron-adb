@@ -29,7 +29,6 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
 import { useDeviceStore } from '../stores/deviceStore'
 import { handleResponse } from '../utils/responseHandler'
 
@@ -54,7 +53,6 @@ const getDevices = async () => {
     } else {
       deviceId.value = ''
     }
-    ElMessage.success('设备列表已更新')
   }
 }
 

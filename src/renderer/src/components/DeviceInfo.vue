@@ -51,6 +51,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router/dist/vue-router'
 import type { DeviceInfo } from '../../../preload/index.d'
+import { handleResponse } from '../utils/responseHandler'
 
 const props = defineProps<{
   deviceId: string
@@ -94,23 +95,29 @@ const fetchDeviceInfo = async () => {
   loading.value = true
   try {
     // 假设我们有一个 API 来获取设备信息
-    const info = await window.api.getDeviceInfo(props.deviceId)
-    deviceInfo.model = info.model
-    deviceInfo.androidVersion = info.androidVersion
-    deviceInfo.serialNumber = info.serialNumber
-    deviceInfo.batteryLevel = info.batteryInfo.level
-    deviceInfo.screenResolution = info.screenResolution
-    deviceInfo.screenSize = info.screenSize
-    deviceInfo.manufacturer = info.manufacturer
-    deviceInfo.totalStorage = info.totalStorage
-    deviceInfo.usedStorage = info.usedStorage
-    deviceInfo.availableStorage = info.availableStorage
-    deviceInfo.marketingName = info.marketingName
-    deviceInfo.totalMemoryGB = info.totalMemoryGB
-    deviceInfo.availableMemoryGB = info.availableMemoryGB
-    deviceInfo.usedMemoryGB = info.usedMemoryGB
-    deviceInfo.isWifiEnabled = info.isWifiEnabled
-    deviceInfo.currentWifi = info.currentWifi
+    const info = await handleResponse<DeviceInfo>(
+      window.api.getDeviceInfo(props.deviceId),
+      '设备信息已更新',
+      '获取设备信息失败'
+    )
+    if (info) {
+      deviceInfo.model = info.model
+      deviceInfo.androidVersion = info.androidVersion
+      deviceInfo.serialNumber = info.serialNumber
+      deviceInfo.batteryLevel = info.batteryInfo.level
+      deviceInfo.screenResolution = info.screenResolution
+      deviceInfo.screenSize = info.screenSize
+      deviceInfo.manufacturer = info.manufacturer
+      deviceInfo.totalStorage = info.totalStorage
+      deviceInfo.usedStorage = info.usedStorage
+      deviceInfo.availableStorage = info.availableStorage
+      deviceInfo.marketingName = info.marketingName
+      deviceInfo.totalMemoryGB = info.totalMemoryGB
+      deviceInfo.availableMemoryGB = info.availableMemoryGB
+      deviceInfo.usedMemoryGB = info.usedMemoryGB
+      deviceInfo.isWifiEnabled = info.isWifiEnabled
+      deviceInfo.currentWifi = info.currentWifi
+    }
   } catch (error) {
     console.error('获取设备信息失败', error)
     ElMessage.error('获取设备信息失败')

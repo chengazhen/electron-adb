@@ -6,6 +6,15 @@
       <div class="left-buttons">
         <div class="flex flex-col space-y-4">
           <router-link
+            to="/device-manager"
+            exact
+            class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
+            active-class="!bg-blue-500 !text-white"
+          >
+            <el-icon class="mr-1.5"><Switch /></el-icon>
+            切换设备
+          </router-link>
+          <router-link
             to="/"
             exact
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
@@ -42,8 +51,8 @@
       </div>
 
       <!-- 中央展示区 -->
-      <div class="center-display invisible">
-        <DeviceInfo :device-id="deviceId" />
+      <div class="center-display">
+        <!-- <DeviceInfo :device-id="deviceId" /> -->
       </div>
 
       <!-- 底部信息栏 -->
@@ -51,23 +60,14 @@
         <el-button type="primary">我真牛逼</el-button>
       </div> -->
     </div>
-
-    <el-button class="usb-debug-guide-btn" @click="goToUsbDebugGuide">
-      如何开启USB调试模式？
-    </el-button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
 import DeviceInfo from '../components/DeviceInfo.vue'
-import { InfoFilled, Management, Setting } from '@element-plus/icons-vue'
+import { InfoFilled, Management, Setting, Switch } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
-const deviceId = ref('')
 const router = useRouter()
-const goToUsbDebugGuide = () => {
-  router.push('/usb-debug-guide')
-}
 </script>
 
 <style scoped>
@@ -135,12 +135,5 @@ const goToUsbDebugGuide = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.usb-debug-guide-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
 }
 </style>

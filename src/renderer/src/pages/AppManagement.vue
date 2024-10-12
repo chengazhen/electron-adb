@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold mb-4">应用管理</h1>
     <div class="grid grid-cols-1 gap-4">
       <DeviceManager @device-selected="handleDeviceSelected" />
-      <AppManager v-if="selectedDevice" :deviceId="selectedDevice" />
+      <AppManager v-if="selectedDevice" :device-id="selectedDevice" />
     </div>
   </div>
 </template>

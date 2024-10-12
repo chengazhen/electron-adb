@@ -1,3 +1,4 @@
+import { handleResponse } from '@renderer/utils/responseHandler'
 import { defineStore } from 'pinia'
 
 interface DeviceState {
@@ -8,7 +9,7 @@ interface DeviceState {
 export const useDeviceStore = defineStore('device', {
   state: (): DeviceState => ({
     connectedDevice: null,
-    deviceList: [],
+    deviceList: []
   }),
   actions: {
     setConnectedUsbDevice(deviceId: string) {
@@ -16,7 +17,14 @@ export const useDeviceStore = defineStore('device', {
     },
     async fetchDevices() {
       try {
-        this.deviceList = await window.api.listDevices()
+        const res = await handleResponse<{ id: string; type: string }[]>(
+          window.api.listDevices(),
+          '设备列表已更新',
+          '获取设备列表失败'
+        )
+        if (res) {
+          this.deviceList = res
+        }
       } catch (error) {
         console.error('Failed to fetch devices:', error)
       }

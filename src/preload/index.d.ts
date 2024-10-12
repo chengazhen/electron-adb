@@ -48,7 +48,7 @@ declare global {
       connectDevice: (deviceId: string) => Promise<void>
       disconnectDevice: () => Promise<void>
       installApp: (apkPath: string, deviceId: string) => Promise<void>
-      getDeviceInfo: (deviceId: string) => Promise<DeviceInfo>
+      getDeviceInfo: (deviceId: string) => Promise<ResponseData<DeviceInfo>>
       getInstalledApps: (deviceId: string) => Promise<string[]>
       getAppInfo: (
         deviceId: string,
