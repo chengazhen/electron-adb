@@ -11,7 +11,9 @@
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
             active-class="!bg-blue-500 !text-white"
           >
-            <el-icon class="mr-1.5"><InfoFilled /></el-icon>
+            <el-icon class="mr-1.5">
+              <InfoFilled />
+            </el-icon>
             设备信息
           </router-link>
           <router-link
@@ -20,7 +22,9 @@
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
             active-class="!bg-blue-500 !text-white"
           >
-            <el-icon class="mr-1.5"><Management /></el-icon>
+            <el-icon class="mr-1.5">
+              <Management />
+            </el-icon>
             应用管理
           </router-link>
           <router-link
@@ -29,7 +33,9 @@
             class="bg-white bg-opacity-50 rounded-full py-2 px-4 shadow-md hover:shadow-lg transition-shadow duration-300 text-base font-medium flex items-center"
             active-class="!bg-blue-500 !text-white"
           >
-            <el-icon class="mr-1.5"><Setting /></el-icon>
+            <el-icon class="mr-1.5">
+              <Setting />
+            </el-icon>
             高级功能
           </router-link>
         </div>
@@ -45,6 +51,10 @@
         <el-button type="primary">我真牛逼</el-button>
       </div> -->
     </div>
+
+    <el-button class="usb-debug-guide-btn" @click="goToUsbDebugGuide">
+      如何开启USB调试模式？
+    </el-button>
   </div>
 </template>
 
@@ -52,8 +62,12 @@
 import { ref } from 'vue'
 import DeviceInfo from '../components/DeviceInfo.vue'
 import { InfoFilled, Management, Setting } from '@element-plus/icons-vue'
-
+import { useRouter } from 'vue-router'
 const deviceId = ref('')
+const router = useRouter()
+const goToUsbDebugGuide = () => {
+  router.push('/usb-debug-guide')
+}
 </script>
 
 <style scoped>
@@ -121,5 +135,12 @@ const deviceId = ref('')
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.usb-debug-guide-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
 }
 </style>
