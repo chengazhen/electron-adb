@@ -49,7 +49,11 @@ declare global {
       disconnectDevice: () => Promise<void>
       installApp: (apkPath: string, deviceId: string) => Promise<ResponseData<void>>
       getDeviceInfo: (deviceId: string) => Promise<ResponseData<DeviceInfo>>
-      getInstalledApps: (deviceId: string) => Promise<ResponseData<string[]>>
+      getInstalledApps: (
+        deviceId: string
+      ) => Promise<
+        ResponseData<{ packageName: string; installer: string; isThirdParty: boolean }[]>
+      >
       getAppInfo: (
         deviceId: string,
         packageName: string

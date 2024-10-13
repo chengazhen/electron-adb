@@ -5,12 +5,14 @@
       <div class="flex items-center">
         <el-avatar :size="50" :src="icon || defaultIcon"></el-avatar>
         <div class="ml-4">
-          <h3 class="text-lg font-semibold">{{ name || packageName }}</h3>
-          <div class="grid grid-cols-2 gap-2 text-sm text-gray-500">
-            <p>包名：{{ packageName }}</p>
-            <p>版本: {{ appInfo.version }}</p>
+          <h3 class="text-lg font-semibold">
+            {{ name || packageName }}
+            <span class="text-gray-500 text-sm"> 版本：{{ appInfo.version }}</span>
+          </h3>
+          <div class="grid grid-cols-3 gap-2 text-sm text-gray-500">
             <p>安装时间: {{ appInfo.firstInstallTime }}</p>
             <p>更新时间: {{ appInfo.lastUpdateTime }}</p>
+            <p>来源: {{ installer }}</p>
           </div>
         </div>
       </div>
@@ -22,7 +24,13 @@
           @confirm="uninstallApp"
         >
           <template #reference>
-            <el-button type="danger" size="small" :loading="uninstallLoading">卸载</el-button>
+            <el-button
+              type="danger"
+              size="small"
+              :loading="uninstallLoading"
+              :disabled="!isThirdParty"
+              >卸载</el-button
+            >
           </template>
         </el-popconfirm>
       </div>
@@ -32,7 +40,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import defaultIcon from '@renderer/assets/electron.svg'
+import defaultIcon from '@renderer/assets/Android.webp'
 import { useDeviceStore } from '../stores/deviceStore'
 import { handleResponse } from '../utils/responseHandler'
 
@@ -40,6 +48,8 @@ const deviceStore = useDeviceStore()
 
 const props = defineProps<{
   packageName: string
+  installer: string
+  isThirdParty: boolean
 }>()
 
 // const emit = defineEmits(['uninstall'])
@@ -58,7 +68,8 @@ async function getAppInfo() {
   const info = await handleResponse(
     window.api.getAppInfo(deviceStore.connectedDevice, props.packageName),
     '',
-    '获取应用信息失败'
+    '',
+    false
   )
   if (info) {
     appInfo.value = info
@@ -74,11 +85,12 @@ async function getAppIcon() {
   const data = await handleResponse(
     window.api.getApkIcon(deviceStore.connectedDevice, props.packageName),
     '',
-    '获取应用图标失败'
+    '',
+    false
   )
   console.log(data)
   if (data) {
-    icon.value = `data:image/png;base64,${data.icon}`
+    data.icon && (icon.value = `data:image/png;base64,${data.icon}`)
     name.value = data.name
   }
   loading.value = false

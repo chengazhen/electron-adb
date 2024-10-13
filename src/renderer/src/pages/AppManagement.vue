@@ -12,14 +12,16 @@
         <el-button type="primary" @click="showInstaller">安装应用</el-button>
       </template>
     </el-page-header>
+
     <div class="flex-1 overflow-hidden p-4">
       <div v-if="loading" class="text-center py-4"></div>
       <div v-else class="app-list-container h-full">
         <el-scrollbar>
           <div v-for="app in paginatedApps" :key="app.packageName">
             <AppItem
-              :app="app"
+              :is-third-party="app.isThirdParty"
               :package-name="app.packageName"
+              :installer="app.installer"
               @uninstall="handleUninstall(app.packageName)"
             />
           </div>
@@ -49,7 +51,13 @@ import { handleResponse } from '../utils/responseHandler'
 import { Refresh } from '@element-plus/icons-vue'
 const deviceStore = useDeviceStore()
 
-const installedApps = ref<{ packageName: string }[]>([])
+const installedApps = ref<
+  {
+    packageName: string
+    installer: string
+    isThirdParty: boolean
+  }[]
+>([])
 const loading = ref(false)
 const currentPage = ref(1)
 const pageSize = 10
@@ -70,8 +78,9 @@ const getInstalledApps = async () => {
   try {
     const apps = await handleResponse(window.api.getInstalledApps(deviceStore.connectedDevice))
     if (apps) {
-      installedApps.value = apps.map((item) => ({ packageName: item }))
-      // .filter((item) => item.packageName.includes('twitter'))
+      installedApps.value = apps
+      console.log(installedApps.value)
+      // .filter((item) => item.packageName.includes('wandoujia'))
       currentPage.value = 1
     }
   } catch (error) {

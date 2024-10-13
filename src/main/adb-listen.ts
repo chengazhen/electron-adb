@@ -92,10 +92,9 @@ ipcMain.handle(
       const isWifiEnabled = wifiStatus.includes('Wi-Fi is enabled')
 
       // 获取当前连接的WiFi名称
-      const wifiInfo = await client.shell(deviceId, 'dumpsys wifi | grep "SSID:"')
-      const ssidMatch = wifiInfo.match(/SSID: (.+)/)
-      const currentWifi = ssidMatch ? extractSSID(ssidMatch[1]) : '未连接'
-      console.log(currentWifi)
+      const wifiInfo = await client.shell(deviceId, 'dumpsys wifi | grep "mWifiInfo"')
+      const ssidMatch = wifiInfo.match(/SSID:\s*"([^"]+)"/)
+      const currentWifi = ssidMatch ? ssidMatch[1] : '未连接'
 
       return {
         batteryInfo: {
@@ -137,13 +136,6 @@ ipcMain.handle(
   })
 )
 
-// 提取WiFi名称
-function extractSSID(input: string): string | null {
-  const regex = /"([^"]+)"/
-  const match = input.match(regex)
-  return match ? match[1] : null
-}
-
 // 判断当前环境是否为windows
 ipcMain.handle(
   'getPlatform',
@@ -156,10 +148,26 @@ ipcMain.handle(
 ipcMain.handle(
   'getInstalledApps',
   handleResponse(async (_, deviceId: string) => {
-    const packages = await client.shell(deviceId, 'pm list packages -3')
-    return packages.split('\n').map((line) => line.replace('package:', ''))
+    const packages = await client.shell(deviceId, 'pm list packages -i')
+    const thirdPartyAppStr = await client.shell(deviceId, 'pm list packages -3')
+    const thirdPartyApps = thirdPartyAppStr.split('\n')
+    return packages.split('\n').map((line) => {
+      const packageName = line.replace('package:', '').split(' ')[0]
+      return {
+        packageName,
+        installer: formatInstaller(line.split('installer=')[1]),
+        isThirdParty: thirdPartyApps.some((app) => app.includes(packageName))
+      }
+    })
   })
 )
+
+function formatInstaller(installer: string) {
+  if (installer === 'null') {
+    return '系统'
+  }
+  return installer
+}
 
 // 获取应用信息
 ipcMain.handle(
@@ -209,27 +217,27 @@ ipcMain.handle(
       const localApkPath = path.join(tempDir, `${packageName}.apk`)
 
       // 判断本地是否已经有了APK文件
-      await execAsync(`adb -s ${deviceId} pull ${trimmedApkPath} ${localApkPath}`)
-      const zip = new AdmZip(localApkPath)
+      await client.pullFile(deviceId, trimmedApkPath, localApkPath)
 
       const { stdout: aaptInfo } = await execAsync(`${aapt} dump badging ${localApkPath}`)
       const zhMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
       const enMatch = aaptInfo.match(/application-label:'([^']*)'/)
-      const appName = zhMatch ? zhMatch[1] : enMatch ? enMatch[1] : '未知'
+      const appName = zhMatch ? zhMatch[1] : enMatch ? enMatch[1] : packageName
 
       const iconMatch = aaptInfo.match(/application-icon-[0-9]+:'([^']+)'/)
+      let iconBase64 = ''
       if (iconMatch) {
+        const zip = new AdmZip(localApkPath)
         const iconPath = iconMatch[1]
         const iconBuffer = zip.getEntry(iconPath).getData()
-        const iconBase64 = iconBuffer.toString('base64')
+        iconBase64 = iconBuffer.toString('base64')
         conf.set(`${deviceId}_${packageName}_icon`, { icon: iconBase64, name: appName })
-        return {
-          icon: iconBase64,
-          name: appName
-        }
       }
 
-      return null
+      return {
+        icon: iconBase64,
+        name: appName
+      }
     } catch (error) {
       console.error('获取APK图标失败:', error)
       throw error

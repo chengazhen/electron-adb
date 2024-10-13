@@ -9,7 +9,8 @@ interface ResponseData<T> {
 export async function handleResponse<T>(
   promise: Promise<ResponseData<T>>,
   successMessage?: string,
-  errorMessage?: string
+  errorMessage?: string,
+  showError = true
 ): Promise<T | null> {
   try {
     const response = await promise
@@ -19,7 +20,9 @@ export async function handleResponse<T>(
       }
       return response.data
     } else {
-      ElMessage.error(errorMessage || response.error || '操作失败')
+      if (showError) {
+        ElMessage.error(errorMessage || response.error || '操作失败')
+      }
       return null
     }
   } catch (error) {

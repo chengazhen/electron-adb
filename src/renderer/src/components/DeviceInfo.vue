@@ -1,4 +1,14 @@
 <template>
+  <div class="relative">
+    <h1 class="text-3xl font-bold mb-4 flex items-center">
+      <el-icon><InfoFilled /></el-icon>
+      <span>设备信息</span>
+    </h1>
+    <el-button type="primary" class="absolute right-0 top-0" @click="fetchDeviceInfo">
+      <el-icon><Refresh /></el-icon>
+      刷新
+    </el-button>
+  </div>
   <el-row :gutter="20">
     <el-col :span="12">
       <div class="">
@@ -66,6 +76,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart } from 'echarts/charts'
 import { GaugeChart } from 'echarts/charts'
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import { Refresh, InfoFilled } from '@element-plus/icons-vue'
 
 use([CanvasRenderer, PieChart, GaugeChart, TitleComponent, TooltipComponent, LegendComponent])
 
@@ -137,18 +148,6 @@ watch(() => deviceStore.connectedDevice, fetchDeviceInfo)
 
 onMounted(() => {
   fetchDeviceInfo()
-})
-
-const memoryUsage = computed(() => {
-  const usedMemory = parseFloat(deviceInfo.usedMemoryGB)
-  const totalMemory = parseFloat(deviceInfo.totalMemoryGB)
-  return Number(((usedMemory / totalMemory) * 100).toFixed(2))
-})
-
-const storageUsage = computed(() => {
-  const usedStorage = parseFloat(deviceInfo.usedStorage)
-  const totalStorage = parseFloat(deviceInfo.totalStorage)
-  return Number(((usedStorage / totalStorage) * 100).toFixed(2))
 })
 </script>
 
