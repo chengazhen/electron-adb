@@ -35,7 +35,7 @@ ipcMain.handle(
 // 卸载应用
 ipcMain.handle(
   'uninstallApp',
-  handleResponse(async (_, packageName: string, deviceId: string) => {
+  handleResponse(async (_, deviceId: string, packageName: string) => {
     await client.uninstall(deviceId, packageName)
     return { message: 'App uninstalled successfully' }
   })

@@ -15,7 +15,16 @@
         </div>
       </div>
       <div>
-        <el-button type="danger" size="small" @click="uninstallApp">卸载</el-button>
+        <el-popconfirm
+          title="确定要卸载此应用吗？"
+          confirm-button-text="确定"
+          cancel-button-text="取消"
+          @confirm="uninstallApp"
+        >
+          <template #reference>
+            <el-button type="danger" size="small" :loading="uninstallLoading">卸载</el-button>
+          </template>
+        </el-popconfirm>
       </div>
     </div>
   </el-card>
@@ -75,14 +84,15 @@ async function getAppIcon() {
   loading.value = false
 }
 
+const uninstallLoading = ref(false)
 const uninstallApp = async () => {
-  // try {
-  //   await window.api.uninstallApp(props.deviceId, props.packageName)
-  //   ElMessage.success(`成功卸载应用：${appInfo.value.name || props.packageName}`)
-  //   emit('uninstall', props.packageName)
-  // } catch (error) {
-  //   ElMessage.error(`卸载应用失败：${error}`)
-  // }
+  uninstallLoading.value = true
+  await handleResponse(
+    window.api.uninstallApp(deviceStore.connectedDevice, props.packageName),
+    '卸载应用成功',
+    '卸载应用失败'
+  )
+  uninstallLoading.value = false
 }
 
 onMounted(getAppInfo)

@@ -17,7 +17,7 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     },
-    title: 'ADB 工具'
+    title: 'ADB 助手'
   })
 
   mainWindow.on('ready-to-show', () => {

@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: electron-adb
+productName: ADB 助手
 directories:
   buildResources: build
 files:

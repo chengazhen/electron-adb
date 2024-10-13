@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router/dist/vue-router'
-
+import { useDeviceStore } from '@renderer/stores/deviceStore'
 const routes = [
   {
     path: '/',
@@ -34,9 +34,21 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  console.log('beforeEach', to, from)
-  next()
+const whiteList = ['/usb-debug-guide', '/device-manager']
+router.beforeEach((to, _, next) => {
+  console.log('to', to)
+
+  if (whiteList.includes(to.path)) {
+    next()
+    return
+  }
+
+  const deviceStore = useDeviceStore()
+  if (!deviceStore.connectedDevice) {
+    next({ path: '/device-manager', replace: true })
+  } else {
+    next()
+  }
 })
 
 export default router

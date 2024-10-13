@@ -19,7 +19,7 @@ export const useDeviceStore = defineStore('device', {
       try {
         const res = await handleResponse<{ id: string; type: string }[]>(
           window.api.listDevices(),
-          '设备列表已更新',
+          '',
           '获取设备列表失败'
         )
         if (res) {
@@ -45,6 +45,6 @@ export const useDeviceStore = defineStore('device', {
         console.error('Failed to disconnect device:', error)
       }
     }
-  },
-  persist: true // 启用持久化
+  }
+  // persist: true // 启用持久化
 })

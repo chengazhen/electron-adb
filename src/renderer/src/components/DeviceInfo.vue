@@ -41,7 +41,7 @@
       <div class="">
         <span class="min-w-[100px]">内存使用：</span>
         <h1 class="text-2xl font-bold">
-          {{ memoryUsage }}% ({{ deviceInfo.usedMemoryGB }}GB/{{ deviceInfo.totalMemoryGB }}GB)
+          {{ deviceInfo.usedMemoryGB }}GB/{{ deviceInfo.totalMemoryGB }}GB
         </h1>
       </div>
     </el-col>
@@ -49,7 +49,7 @@
       <div class="">
         <span class="min-w-[100px]">存储使用：</span>
         <h1 class="text-2xl font-bold">
-          {{ storageUsage }}% ({{ deviceInfo.usedStorage }}B/{{ deviceInfo.totalStorage }}B)
+          {{ deviceInfo.usedStorage }}B/{{ deviceInfo.totalStorage }}B
         </h1>
       </div>
     </el-col>

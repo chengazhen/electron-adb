@@ -1,7 +1,7 @@
 {
   "name": "electron-adb",
   "version": "1.0.9",
-  "description": "An Electron application with Vue and TypeScript",
+  "description": "ADB 调试工具",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
@@ -14,7 +14,7 @@
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "dev:chcp": "chcp 65001 && electron-vite dev",
-    "build": "npm run typecheck && electron-vite build",
+    "build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win --publish always",

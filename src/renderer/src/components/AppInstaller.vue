@@ -1,52 +1,41 @@
 <template>
-  <el-card>
-    <template #header>
-      <div class="flex justify-between items-center">
-        <span class="text-lg font-semibold">应用安装</span>
-      </div>
-    </template>
-    <el-upload
-      class="upload-demo"
-      action="#"
-      :on-change="handleApkSelect"
-      :auto-upload="false"
-      :show-file-list="false"
+  <el-upload
+    class="upload-demo"
+    action="#"
+    :on-change="handleApkSelect"
+    :auto-upload="false"
+    :show-file-list="false"
+    drag
+  >
+    <el-button type="primary">选择 APK 文件</el-button>
+  </el-upload>
+  <div v-if="selectedApk" class="mt-3">已选择: {{ selectedApk }}</div>
+  <div class="mt-5 w-full">
+    <el-button
+      type="primary"
+      class="w-full"
+      :loading="installing"
+      :disabled="!deviceId || !selectedApk"
+      @click="installSelectedApp"
     >
-      <el-button type="primary">选择 APK 文件</el-button>
-    </el-upload>
-    <div v-if="selectedApk" class="mt-3">已选择: {{ selectedApk }}</div>
-    <div class="mt-5 w-full">
-      <el-button-group class="w-full">
-        <el-button
-          type="primary"
-          @click="installSelectedApp"
-          :loading="installing"
-          :disabled="!deviceId || !selectedApk"
-          class="w-1/2"
-        >
-          {{ installing ? '安装中...' : '安装应用' }}
-        </el-button>
-        <el-button type="danger" @click="uninstallApp" :disabled="true" class="w-1/2">
-          应用管理
-        </el-button>
-      </el-button-group>
-    </div>
-  </el-card>
+      {{ installing ? '安装中...' : '安装应用' }}
+    </el-button>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router/dist/vue-router'
 import { useDeviceStore } from '../stores/deviceStore'
-const router = useRouter()
-const deviceStore = useDeviceStore()
+import { handleResponse } from '../utils/responseHandler'
 
+const deviceStore = useDeviceStore()
 
 const deviceId = computed(() => deviceStore.connectedDevice)
 const selectedApk = ref('')
 
 const handleApkSelect = (file) => {
+  console.log('file', file)
   selectedApk.value = file.raw.path
   return false // Prevent auto-upload
 }
@@ -67,27 +56,15 @@ const installSelectedApp = async () => {
     return
   }
   installing.value = true
-  try {
-    await window.api.installApp(selectedApk.value, deviceId.value)
-    ElMessage.success('应用安装成功')
+  const res = await handleResponse(
+    window.api.installApp(selectedApk.value, deviceId.value),
+    '安装应用成功',
+    '应用安装失败'
+  )
+  if (res) {
     selectedApk.value = '' // Reset selected file after installation
-  } catch (error) {
-    ElMessage.error('应用安装失败')
   }
-  installing.value = false
-}
 
-const uninstallApp = async () => {
-  router.push('/app-management')
-  // if (!props.deviceId) {
-  //   ElMessage.warning('请先选择设备')
-  //   return
-  // }
-  // try {
-  //   await window.api.uninstallApp(props.deviceId)
-  //   ElMessage.success('应用卸载成功')
-  // } catch (error) {
-  //   ElMessage.error('应用卸载失败')
-  // }
+  installing.value = false
 }
 </script>

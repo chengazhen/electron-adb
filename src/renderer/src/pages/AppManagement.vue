@@ -4,13 +4,24 @@
       <template #content>
         <span class="text-large text-#409eff font-600 mr-3"> 应用管理 </span>
       </template>
+      <template #extra>
+        <el-button type="primary" @click="refreshApps">
+          <el-icon><Refresh /></el-icon>
+          刷新
+        </el-button>
+        <el-button type="primary" @click="showInstaller">安装应用</el-button>
+      </template>
     </el-page-header>
     <div class="flex-1 overflow-hidden p-4">
       <div v-if="loading" class="text-center py-4"></div>
       <div v-else class="app-list-container h-full">
         <el-scrollbar>
           <div v-for="app in paginatedApps" :key="app.packageName">
-            <AppItem :app="app" :package-name="app.packageName" @uninstall="handleUninstall" />
+            <AppItem
+              :app="app"
+              :package-name="app.packageName"
+              @uninstall="handleUninstall(app.packageName)"
+            />
           </div>
           <div v-if="hasMoreApps" class="text-center py-4">
             <el-button @click="loadMoreApps">加载更多</el-button>
@@ -18,19 +29,24 @@
         </el-scrollbar>
       </div>
     </div>
+
+    <el-drawer v-model="drawerVisible" title="安装应用" direction="rtl" size="50%">
+      <AppInstaller />
+    </el-drawer>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElDrawer } from 'element-plus'
 import AppItem from '../components/AppItem.vue'
+import AppInstaller from '../components/AppInstaller.vue'
 import { ElScrollbar, ElPageHeader } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { useDeviceStore } from '../stores/deviceStore'
 import { handleResponse } from '../utils/responseHandler'
-
+import { Refresh } from '@element-plus/icons-vue'
 const deviceStore = useDeviceStore()
 
 const installedApps = ref<{ packageName: string }[]>([])
@@ -66,19 +82,30 @@ const getInstalledApps = async () => {
 }
 
 const handleUninstall = (packageName: string) => {
-  if (!deviceStore.connectedDevice) {
-    return
-  }
-  window.api.uninstallApp(deviceStore.connectedDevice, packageName)
+  handleResponse(
+    window.api.uninstallApp(deviceStore.connectedDevice, packageName),
+    '卸载应用成功',
+    '卸载应用失败'
+  )
 }
 
 const loadMoreApps = () => {
   currentPage.value++
 }
 
+const refreshApps = () => {
+  getInstalledApps()
+}
+
 const router = useRouter()
 const goBack = () => {
   router.back()
+}
+
+const drawerVisible = ref(false)
+
+const showInstaller = () => {
+  drawerVisible.value = true
 }
 
 onMounted(getInstalledApps)
