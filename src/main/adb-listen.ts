@@ -92,8 +92,9 @@ ipcMain.handle(
       const isWifiEnabled = wifiStatus.includes('Wi-Fi is enabled')
 
       // 获取当前连接的WiFi名称
-      const wifiInfo = await client.shell(deviceId, 'dumpsys wifi | grep "mWifiInfo"')
-      const ssidMatch = wifiInfo.match(/SSID:\s*"([^"]+)"/)
+      const wifiInfo = await client.shell(deviceId, 'dumpsys wifi | grep "SSID"')
+      const connectedWifi = wifiInfo.match(/^=\*\s*ID:.*$/gm)
+      const ssidMatch = connectedWifi && connectedWifi[0].match(/SSID:?\s*"([^"]+)"/)
       const currentWifi = ssidMatch ? ssidMatch[1] : '未连接'
 
       return {
