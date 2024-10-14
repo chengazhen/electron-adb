@@ -1,5 +1,6 @@
 {
   "name": "electron-adb",
+  "private": false,
   "version": "1.0.10",
   "description": "ADB 调试工具",
   "main": "./out/main/index.js",
