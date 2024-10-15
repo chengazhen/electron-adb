@@ -1,11 +1,5 @@
 import { ElMessage } from 'element-plus'
 
-interface ResponseData<T> {
-  success: boolean
-  data: T | null
-  error: string | null
-}
-
 export async function handleResponse<T>(
   promise: Promise<ResponseData<T>>,
   successMessage?: string,
