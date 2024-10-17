@@ -38,8 +38,6 @@ const deviceStore = useDeviceStore()
 
 const devices = ref<{ type: string; id: string }[]>([])
 
-const emit = defineEmits(['device-selected'])
-
 const getDevices = async () => {
   const result = await handleResponse(
     window.api.listDevices(),
@@ -52,7 +50,6 @@ const getDevices = async () => {
 const selectDevice = (deviceId: string) => {
   console.log('selectDevice', deviceId)
   deviceStore.setConnectedUsbDevice(deviceId)
-  emit('device-selected', deviceId)
   router.push(`/`)
 }
 
