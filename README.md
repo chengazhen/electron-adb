@@ -34,6 +34,7 @@ $ npm run build:linux
 
 ## waitList
 
+[] 远程连接
 [] 电源选项
 [] 终端
 [] ADB over Wi-Fi
