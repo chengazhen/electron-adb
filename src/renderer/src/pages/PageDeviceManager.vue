@@ -14,7 +14,7 @@
       <el-button
         v-for="device in devices"
         :key="device.id"
-        class="device-button w-full mb-2 h-13"
+        class="device-button w-full mb-2 h-13 !ml-0"
         @click="selectDevice(device.id)"
       >
         {{ device.id }}
@@ -50,6 +50,7 @@ const getDevices = async () => {
 }
 
 const selectDevice = (deviceId: string) => {
+  console.log('selectDevice', deviceId)
   deviceStore.setConnectedUsbDevice(deviceId)
   emit('device-selected', deviceId)
   router.push(`/`)

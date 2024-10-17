@@ -68,7 +68,6 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import type { DeviceInfo } from '../../../preload/index.d'
 import { handleResponse } from '../utils/responseHandler'
 import { useDeviceStore } from '../stores/deviceStore'
 import { use } from 'echarts/core'
