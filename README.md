@@ -32,3 +32,13 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+## waitList
+
+[] 电源选项
+[] 终端
+[] ADB over Wi-Fi
+[] 文件管理
+[] 屏幕镜像
+
+
