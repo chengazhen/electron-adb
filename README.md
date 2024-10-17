@@ -35,7 +35,7 @@ $ npm run build:linux
 ## waitList
 
 - [ ] 远程连接
-- [x ] 电源选项
+- [ ] 电源选项
 - [ ] 终端
 - [ ] ADB over Wi-Fi
 - [ ] 文件管理
