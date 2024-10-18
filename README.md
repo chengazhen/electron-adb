@@ -32,6 +32,14 @@ $ npm run build:mac
 $ npm run build:linux
 ```
 
+## 截图
+
+![image](./screenshot/WX20241018-171349@2x.png)
+
+![image](./screenshot/WX20241018-171615@2x.png)
+
+![image](./screenshot/WX20241018-171625@2x.png)
+
 ## waitList
 
 - [ ] 远程连接
