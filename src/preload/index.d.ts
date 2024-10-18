@@ -30,6 +30,7 @@ declare global {
         packageName: string
       ) => Promise<ResponseData<{ icon: string; name: string }>>
       uninstallApp: (deviceId: string, packageName: string) => Promise<ResponseData<void>>
+      connectToRemoteDevice: (ip: string, port?: number) => Promise<ResponseData<string>>
     }
   }
 }

@@ -17,7 +17,9 @@ const api = {
   getApkIcon: (deviceId: string, packageName: string) =>
     ipcRenderer.invoke('get-apk-icon', deviceId, packageName),
   uninstallApp: (deviceId: string, packageName: string) =>
-    ipcRenderer.invoke('uninstallApp', deviceId, packageName)
+    ipcRenderer.invoke('uninstallApp', deviceId, packageName),
+  connectToRemoteDevice: (ip: string, port?: number) =>
+    ipcRenderer.invoke('connectToRemoteDevice', ip, port)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
