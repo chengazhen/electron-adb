@@ -70,6 +70,9 @@ ipcMain.handle(
       const wifiStatus = await client.shell(deviceId, 'dumpsys wifi | grep "Wi-Fi is"')
       const isWifiEnabled = wifiStatus.includes('Wi-Fi is enabled')
 
+      const currentWifi = await utils.ssidName(deviceId)
+      const deviceName = await utils.deviceName(deviceId)
+
       return {
         batteryInfo: {
           level: batteryStatus.get('level'),
@@ -101,8 +104,8 @@ ipcMain.handle(
         availableMemoryGB,
         usedMemoryGB,
         isWifiEnabled,
-        currentWifi: utils.ssidName(deviceId),
-        deviceName: utils.deviceName(deviceId)
+        currentWifi,
+        deviceName
       }
     } catch (error) {
       console.error('Error fetching device info:', error)
