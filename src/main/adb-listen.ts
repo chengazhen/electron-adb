@@ -10,9 +10,10 @@ import aapt from '../../resources/aapt.exe?asset&asarUnpack'
 import AdmZip from 'adm-zip'
 import { getMarketingName } from './csv-reader'
 import { handleResponse } from './responseHandler'
+import Utils from './utils'
 
 const conf = new Conf()
-
+const utils = new Utils(client)
 const execAsync = promisify(exec)
 
 ipcMain.handle(
@@ -46,56 +47,28 @@ ipcMain.handle(
   'getDeviceInfo',
   handleResponse(async (_, deviceId: string) => {
     try {
-      const properties = await client.listProperties(deviceId)
+      const properties = await utils.getProperties(deviceId)
       const batteryStatus = await client.batteryStatus(deviceId)
-      console.log(properties.get('ro.product.manufacturer'))
       // 获取储存信息
-      const storageInfo = await client.shell(deviceId, 'df -h /data')
-      const storageLines = storageInfo.split('\n')
-      let totalStorage = ''
-      let usedStorage = ''
-      let availableStorage = ''
+      const {
+        total: totalStorage,
+        used: usedStorage,
+        available: availableStorage
+      } = await utils.storageInfo(deviceId)
 
-      if (storageLines.length > 1) {
-        const storageData = storageLines[1].split(/\s+/)
-        if (storageData.length >= 4) {
-          totalStorage = storageData[1]
-          usedStorage = storageData[2]
-          availableStorage = storageData[3]
-        }
-      }
-
-      const model = properties.get('ro.product.model') as string
+      const model = await utils.modelName(deviceId)
       const marketingName = getMarketingName(model)
 
       // 获取运行内存使用情况
-      const memoryInfo = await client.shell(deviceId, 'cat /proc/meminfo')
-      const memLines = memoryInfo.split('\n')
-      let totalMemory = ''
-      let availableMemory = ''
-
-      for (const line of memLines) {
-        if (line.startsWith('MemTotal:')) {
-          totalMemory = line.split(/\s+/)[1]
-        } else if (line.startsWith('MemAvailable:')) {
-          availableMemory = line.split(/\s+/)[1]
-        }
-        if (totalMemory && availableMemory) break
-      }
-
-      const totalMemoryGB = (parseInt(totalMemory) / 1024 / 1024).toFixed(2)
-      const availableMemoryGB = (parseInt(availableMemory) / 1024 / 1024).toFixed(2)
-      const usedMemoryGB = (parseFloat(totalMemoryGB) - parseFloat(availableMemoryGB)).toFixed(2)
+      const {
+        total: totalMemoryGB,
+        available: availableMemoryGB,
+        used: usedMemoryGB
+      } = await utils.memoryInfo(deviceId)
 
       // 获取WiFi状态
       const wifiStatus = await client.shell(deviceId, 'dumpsys wifi | grep "Wi-Fi is"')
       const isWifiEnabled = wifiStatus.includes('Wi-Fi is enabled')
-
-      // 获取当前连接的WiFi名称
-      const wifiInfo = await client.shell(deviceId, 'dumpsys wifi | grep "SSID"')
-      const connectedWifi = wifiInfo.match(/^=\*\s*ID:.*$/gm)
-      const ssidMatch = connectedWifi && connectedWifi[0].match(/SSID:?\s*"([^"]+)"/)
-      const currentWifi = ssidMatch ? ssidMatch[1] : '未连接'
 
       return {
         batteryInfo: {
@@ -128,7 +101,8 @@ ipcMain.handle(
         availableMemoryGB,
         usedMemoryGB,
         isWifiEnabled,
-        currentWifi
+        currentWifi: utils.ssidName(deviceId),
+        deviceName: utils.deviceName(deviceId)
       }
     } catch (error) {
       console.error('Error fetching device info:', error)
