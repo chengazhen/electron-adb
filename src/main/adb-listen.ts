@@ -239,3 +239,30 @@ ipcMain.handle(
     }
   })
 )
+
+// 重启设备
+ipcMain.handle(
+  'rebootDevice',
+  handleResponse(async (_, deviceId: string) => {
+    await client.reboot(deviceId)
+    return { success: true }
+  })
+)
+
+// 关机设备
+ipcMain.handle(
+  'shutdownDevice',
+  handleResponse(async (_, deviceId: string) => {
+    await client.shutdown(deviceId)
+    return { success: true }
+  })
+)
+
+// 重启到recovery
+ipcMain.handle(
+  'rebootToRecovery',
+  handleResponse(async (_, deviceId: string) => {
+    await client.shell(deviceId, 'reboot recovery')
+    return { success: true }
+  })
+)
