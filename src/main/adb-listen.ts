@@ -247,3 +247,21 @@ ipcMain.handle(
 )
 
 // ... 其他现有的代码 ...
+
+// 远程连接设备
+ipcMain.handle(
+  'connectToRemoteDevice',
+  handleResponse(async (_, ip: string, port?: number) => {
+    try {
+      if (port) {
+        const result = await client.connect(ip, port)
+        return { success: true, data: result }
+      } else {
+        const result = await client.connect(ip)
+        return { success: true, data: result }
+      }
+    } catch (error) {
+      return { success: false, error: '连接失败' }
+    }
+  })
+)

@@ -45,10 +45,10 @@ import AppItem from '../components/AppItem.vue'
 import AppInstaller from '../components/AppInstaller.vue'
 import { ElScrollbar, ElPageHeader } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ArrowLeft, Refresh } from '@element-plus/icons-vue'
 import { useDeviceStore } from '../stores/deviceStore'
 import { handleResponse } from '../utils/responseHandler'
-import { Refresh } from '@element-plus/icons-vue'
+
 const deviceStore = useDeviceStore()
 
 const installedApps = ref<
