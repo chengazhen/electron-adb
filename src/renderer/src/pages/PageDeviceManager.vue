@@ -8,7 +8,7 @@
         选择设备
       </h1>
       <div class="ml-auto">
-        <el-button type="primary" @click="getDevices">
+        <el-button type="primary" @click="deviceStore.fetchDevices">
           <el-icon>
             <Refresh />
           </el-icon>
@@ -22,9 +22,9 @@
         </el-button>
       </div>
     </div>
-    <template v-if="devices.length > 0">
+    <template v-if="deviceStore.deviceList.length > 0">
       <el-button
-        v-for="device in devices"
+        v-for="device in deviceStore.deviceList"
         :key="device.id"
         class="device-button w-full mb-2 h-13 !ml-0"
         @click="selectDevice(device.id)"
@@ -55,17 +55,6 @@ import RemoteConnect from '../components/RemoteConnect.vue'
 const router = useRouter()
 const deviceStore = useDeviceStore()
 
-const devices = ref<{ type: string; id: string }[]>([])
-
-const getDevices = async () => {
-  const result = await handleResponse(
-    window.api.listDevices(),
-    '设备列表已更新',
-    '获取设备列表失败'
-  )
-  devices.value = result || []
-}
-
 const selectDevice = (deviceId: string) => {
   console.log('selectDevice', deviceId)
   deviceStore.setConnectedUsbDevice(deviceId)
@@ -91,7 +80,10 @@ const handleRemoteConnect = async (ip: string, port?: number) => {
 const showRemoteConnect = () => {
   remoteConnectDrawerVisible.value = true
 }
-onMounted(getDevices)
+
+onMounted(async () => {
+  await deviceStore.fetchDevices()
+})
 </script>
 
 <style scoped>

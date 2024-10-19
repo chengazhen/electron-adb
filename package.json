@@ -1,7 +1,7 @@
 {
   "name": "electron-adb",
   "private": false,
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "ADB 调试工具",
   "main": "./out/main/index.js",
   "author": "example.com",
