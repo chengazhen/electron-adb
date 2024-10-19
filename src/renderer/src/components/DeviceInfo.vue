@@ -1,13 +1,19 @@
 <template>
-  <div class="relative">
+  <div class="relative flex">
     <h1 class="text-3xl font-bold mb-4 flex items-center">
-      <el-icon><InfoFilled /></el-icon>
+      <el-icon>
+        <InfoFilled />
+      </el-icon>
       <span>设备信息</span>
     </h1>
-    <el-button type="primary" class="absolute right-0 top-0" @click="fetchDeviceInfo">
-      <el-icon><Refresh /></el-icon>
-      刷新
-    </el-button>
+    <div class="ml-auto">
+      <el-button type="primary" :loading="loading" @click="fetchDeviceInfo">
+        <el-icon>
+          <Refresh />
+        </el-icon>
+        刷新
+      </el-button>
+    </div>
   </div>
   <el-row :gutter="20">
     <el-col :span="12">
@@ -157,6 +163,7 @@ onMounted(() => {
 }
 
 .custom-progress :deep(.el-progress__text) {
-  color: #ffffff; /* 将文本颜色设置为白色 */
+  color: #ffffff;
+  /* 将文本颜色设置为白色 */
 }
 </style>
