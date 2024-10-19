@@ -36,4 +36,5 @@ interface DeviceInfo {
   marketingName: string
   isWifiEnabled: boolean
   currentWifi: string
+  wifiIpAddress: string
 }

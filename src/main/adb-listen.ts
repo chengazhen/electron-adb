@@ -73,6 +73,8 @@ ipcMain.handle(
       const currentWifi = await utils.ssidName(deviceId)
       const deviceName = await utils.deviceName(deviceId)
 
+      const wifiIpAddress = await utils.getWifiIpAddress(deviceId)
+
       return {
         batteryInfo: {
           level: batteryStatus.get('level'),
@@ -105,7 +107,8 @@ ipcMain.handle(
         usedMemoryGB,
         isWifiEnabled,
         currentWifi,
-        deviceName
+        deviceName,
+        wifiIpAddress
       }
     } catch (error) {
       console.error('Error fetching device info:', error)

@@ -28,11 +28,16 @@
         <h1 class="text-2xl font-bold">{{ deviceInfo.marketingName }}</h1>
       </div>
     </el-col>
-
     <el-col :span="12" class="mt-5">
       <div class="">
         <span class="min-w-[100px]">WiFi：</span>
         <h1 class="text-2xl font-bold">{{ wifiStatus }}</h1>
+      </div>
+    </el-col>
+    <el-col :span="12" class="mt-5">
+      <div class="">
+        <span class="min-w-[100px]">IP 地址：</span>
+        <h1 class="text-2xl font-bold">{{ deviceInfo.wifiIpAddress }}</h1>
       </div>
     </el-col>
     <el-col :span="12" class="mt-5">
@@ -47,12 +52,7 @@
         <h1 class="text-2xl font-bold">{{ deviceInfo.batteryLevel }}%</h1>
       </div>
     </el-col>
-    <el-col :span="12" class="mt-5">
-      <div class="">
-        <span class="min-w-[100px]">屏幕尺寸：</span>
-        <h1 class="text-2xl font-bold">{{ deviceInfo.screenSize }}</h1>
-      </div>
-    </el-col>
+
     <el-col :span="12" class="mt-5">
       <div class="">
         <span class="min-w-[100px]">内存使用：</span>
@@ -107,7 +107,8 @@ const deviceInfo = reactive<DeviceInfoWithoutBattery>({
   availableMemoryGB: '',
   usedMemoryGB: '',
   isWifiEnabled: false,
-  currentWifi: ''
+  currentWifi: '',
+  wifiIpAddress: ''
 })
 
 const wifiStatus = computed(() => {
@@ -145,6 +146,7 @@ const fetchDeviceInfo = async () => {
     deviceInfo.usedMemoryGB = info.usedMemoryGB
     deviceInfo.isWifiEnabled = info.isWifiEnabled
     deviceInfo.currentWifi = info.currentWifi
+    deviceInfo.wifiIpAddress = info.wifiIpAddress
   }
   loading.value = false
 }

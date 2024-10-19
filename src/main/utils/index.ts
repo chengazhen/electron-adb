@@ -133,6 +133,17 @@ class Utils {
 
     return { total: totalMemoryGB, available: availableMemoryGB, used: usedMemoryGB }
   }
+
+  async getWifiIpAddress(serial: string): Promise<string> {
+    try {
+      const wifiInfo = await this.client.shell(serial, 'ip addr show wlan0')
+      const match = wifiInfo.match(/inet\s(\d+\.\d+\.\d+\.\d+)/)
+      return match ? match[1] : '未找到 IP 地址'
+    } catch (error) {
+      console.error('获取 WiFi IP 地址失败:', error)
+      return '获取失败'
+    }
+  }
 }
 
 export default Utils
