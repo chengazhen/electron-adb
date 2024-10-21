@@ -16,14 +16,23 @@
         <el-button type="warning" :icon="Refresh" :loading="rebootLoading" @click="rebootDevice">
           重启设备
         </el-button>
-        <el-button
-          type="danger"
-          :icon="RefreshRight"
-          :loading="rebootToRecoveryLoading"
-          @click="rebootToRecovery"
+        <el-popconfirm
+          title="确认重启至恢复模式?"
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          @confirm="rebootToRecovery"
         >
-          重启至恢复模式
-        </el-button>
+          <template #reference>
+            <el-button
+              type="danger"
+              disabled
+              :icon="RefreshRight"
+              :loading="rebootToRecoveryLoading"
+            >
+              重启至恢复模式
+            </el-button>
+          </template>
+        </el-popconfirm>
       </el-card>
 
       <el-card>
