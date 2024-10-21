@@ -11,8 +11,10 @@ import AdmZip from 'adm-zip'
 import { getMarketingName } from './csv-reader'
 import { handleResponse } from './responseHandler'
 import Utils from './utils'
+import Utils from './utils'
 
 const conf = new Conf()
+const utils = new Utils(client)
 const utils = new Utils(client)
 const execAsync = promisify(exec)
 
@@ -48,8 +50,16 @@ ipcMain.handle(
   handleResponse(async (_, deviceId: string) => {
     try {
       const properties = await utils.getProperties(deviceId)
+      const properties = await utils.getProperties(deviceId)
       const batteryStatus = await client.batteryStatus(deviceId)
       // 获取储存信息
+      const {
+        total: totalStorage,
+        used: usedStorage,
+        available: availableStorage
+      } = await utils.storageInfo(deviceId)
+
+      const model = await utils.modelName(deviceId)
       const {
         total: totalStorage,
         used: usedStorage,
@@ -60,6 +70,11 @@ ipcMain.handle(
       const marketingName = getMarketingName(model)
 
       // 获取运行内存使用情况
+      const {
+        total: totalMemoryGB,
+        available: availableMemoryGB,
+        used: usedMemoryGB
+      } = await utils.memoryInfo(deviceId)
       const {
         total: totalMemoryGB,
         available: availableMemoryGB,
@@ -227,6 +242,51 @@ ipcMain.handle(
 )
 
 // ... 其他现有的代码 ...
+
+// 远程连接设备
+ipcMain.handle(
+  'connectToRemoteDevice',
+  handleResponse(async (_, ip: string, port?: number) => {
+    try {
+      if (port) {
+        const result = await client.connect(ip, port)
+        return { success: true, data: result }
+      } else {
+        const result = await client.connect(ip)
+        return { success: true, data: result }
+      }
+    } catch (error) {
+      return { success: false, error: '连接失败' }
+    }
+  })
+)
+
+// 重启设备
+ipcMain.handle(
+  'rebootDevice',
+  handleResponse(async (_, deviceId: string) => {
+    await client.reboot(deviceId)
+    return { success: true }
+  })
+)
+
+// 关机设备
+ipcMain.handle(
+  'shutdownDevice',
+  handleResponse(async (_, deviceId: string) => {
+    await client.shutdown(deviceId)
+    return { success: true }
+  })
+)
+
+// 重启到recovery
+ipcMain.handle(
+  'rebootToRecovery',
+  handleResponse(async (_, deviceId: string) => {
+    await client.shell(deviceId, 'reboot recovery')
+    return { success: true }
+  })
+)
 
 // 远程连接设备
 ipcMain.handle(
