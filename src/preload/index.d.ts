@@ -31,6 +31,10 @@ declare global {
       ) => Promise<ResponseData<{ icon: string; name: string }>>
       uninstallApp: (deviceId: string, packageName: string) => Promise<ResponseData<void>>
       connectToRemoteDevice: (ip: string, port?: number) => Promise<ResponseData<string>>
+      rebootDevice: (deviceId: string) => Promise<ResponseData<void>>
+      shutdownDevice: (deviceId: string) => Promise<ResponseData<void>>
+      rebootToRecovery: (deviceId: string) => Promise<ResponseData<void>>
+      getSystemLogs: (deviceId: string) => Promise<ResponseData<string>>
     }
   }
 }

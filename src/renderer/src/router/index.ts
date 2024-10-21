@@ -26,6 +26,11 @@ const routes = [
     path: '/usb-debug-guide',
     name: 'UsbDebugGuide',
     component: () => import('@renderer/pages/UsbDebugGuide.vue')
+  },
+  {
+    path: '/advanced-features',
+    name: 'AdvancedFeatures',
+    component: () => import('@renderer/pages/AdvancedFeatures.vue')
   }
 ]
 

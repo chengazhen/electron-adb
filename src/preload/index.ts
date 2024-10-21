@@ -19,7 +19,11 @@ const api = {
   uninstallApp: (deviceId: string, packageName: string) =>
     ipcRenderer.invoke('uninstallApp', deviceId, packageName),
   connectToRemoteDevice: (ip: string, port?: number) =>
-    ipcRenderer.invoke('connectToRemoteDevice', ip, port)
+    ipcRenderer.invoke('connectToRemoteDevice', ip, port),
+  rebootDevice: (deviceId: string) => ipcRenderer.invoke('rebootDevice', deviceId),
+  shutdownDevice: (deviceId: string) => ipcRenderer.invoke('shutdownDevice', deviceId),
+  rebootToRecovery: (deviceId: string) => ipcRenderer.invoke('rebootToRecovery', deviceId),
+  getSystemLogs: (deviceId: string) => ipcRenderer.invoke('getSystemLogs', deviceId)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
