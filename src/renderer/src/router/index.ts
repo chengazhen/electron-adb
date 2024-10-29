@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router/dist/vue-router'
 import { useDeviceStore } from '@renderer/stores/deviceStore'
+import Terminal from '@renderer/pages/Terminal.vue'
+
 const routes = [
   {
     path: '/',
@@ -31,6 +33,11 @@ const routes = [
     path: '/advanced-features',
     name: 'AdvancedFeatures',
     component: () => import('@renderer/pages/AdvancedFeatures.vue')
+  },
+  {
+    path: '/terminal',
+    name: 'Terminal',
+    component: Terminal
   }
 ]
 
@@ -39,7 +46,7 @@ const router = createRouter({
   routes
 })
 
-const whiteList = ['/usb-debug-guide', '/device-manager']
+const whiteList = ['/usb-debug-guide', '/device-manager', '/terminal']
 router.beforeEach((to, _, next) => {
   console.log('to', to)
 

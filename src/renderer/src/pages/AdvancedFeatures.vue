@@ -38,21 +38,15 @@
       <el-card>
         <template #header>
           <div class="card-header">
-            <span>系统日志</span>
+            <span>系统</span>
           </div>
         </template>
-        <el-input
-          v-model="systemLogs"
-          type="textarea"
-          :rows="10"
-          readonly
-          placeholder="系统日志将显示在这里..."
-        />
         <div class="mt-2">
           <el-button type="primary" :loading="logsLoading" @click="fetchSystemLogs">
             获取日志
           </el-button>
           <el-button type="info" @click="clearLogs"> 清除日志 </el-button>
+          <el-button type="danger" @click="goToTerminal"> 进入终端 </el-button>
         </div>
       </el-card>
     </div>
@@ -85,6 +79,10 @@ const rebootDevice = async () => {
     '重启设备失败'
   )
   rebootLoading.value = false
+}
+
+const goToTerminal = () => {
+  router.push('/terminal')
 }
 
 const fetchSystemLogs = async () => {

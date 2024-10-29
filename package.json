@@ -40,7 +40,8 @@
     "pinia-plugin-persistedstate": "^4.1.1",
     "vue-echarts": "^7.0.3",
     "vue-router": "^4.4.5",
-    "vue-virt-list": "^1.4.3"
+    "vue-virt-list": "^1.4.3",
+    "vue-web-terminal": "^3.3.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.2",
