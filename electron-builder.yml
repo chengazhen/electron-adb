@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: adb.azhen.me
 productName: ADB 助手
 directories:
   buildResources: build
