@@ -16,17 +16,26 @@
 import { useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import VueWebTerminal from 'vue-web-terminal'
+import { handleResponse } from '@renderer/utils/responseHandler'
+import { useDeviceStore } from '@renderer/stores/deviceStore'
 
 const router = useRouter()
+const deviceStore = useDeviceStore()
 
-const onExec = (
-  commandKey: string,
+const onExec = async (
+  _: string,
   command: string,
   success: (message: string) => void,
-  failed: (message: string) => void,
-  name: string
+  failed: (message: string) => void
 ) => {
-  success('xxxx')
+  const res = await handleResponse(
+    window.api.executeShellCommand(deviceStore.connectedDevice, command)
+  )
+  if (res) {
+    success(res)
+  } else {
+    failed('执行失败')
+  }
 }
 
 const goBack = () => {

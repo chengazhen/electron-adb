@@ -35,6 +35,7 @@ declare global {
       shutdownDevice: (deviceId: string) => Promise<ResponseData<void>>
       rebootToRecovery: (deviceId: string) => Promise<ResponseData<void>>
       getSystemLogs: (deviceId: string) => Promise<ResponseData<string>>
+      executeShellCommand: (deviceId: string, command: string) => Promise<ResponseData<string>>
     }
   }
 }

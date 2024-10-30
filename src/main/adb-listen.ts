@@ -272,3 +272,13 @@ ipcMain.handle(
     return { success: true }
   })
 )
+
+// 执行shell命令
+ipcMain.handle(
+  'executeShellCommand',
+  handleResponse(async (_, deviceId: string, command: string) => {
+    const result = await client.shell(deviceId, command)
+    console.log(result, 'result====>')
+    return result
+  })
+)

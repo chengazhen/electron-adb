@@ -23,7 +23,9 @@ const api = {
   rebootDevice: (deviceId: string) => ipcRenderer.invoke('rebootDevice', deviceId),
   shutdownDevice: (deviceId: string) => ipcRenderer.invoke('shutdownDevice', deviceId),
   rebootToRecovery: (deviceId: string) => ipcRenderer.invoke('rebootToRecovery', deviceId),
-  getSystemLogs: (deviceId: string) => ipcRenderer.invoke('getSystemLogs', deviceId)
+  getSystemLogs: (deviceId: string) => ipcRenderer.invoke('getSystemLogs', deviceId),
+  executeShellCommand: (deviceId: string, command: string) =>
+    ipcRenderer.invoke('executeShellCommand', deviceId, command)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
