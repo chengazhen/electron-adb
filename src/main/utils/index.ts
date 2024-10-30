@@ -144,6 +144,48 @@ class Utils {
       return '获取失败'
     }
   }
+
+  /**
+   * 获取设备的 CPU 架构
+   * @param serial 设备序列号
+   * @returns CPU 架构字符串 (例如: 'arm64-v8a', 'armeabi-v7a', 'x86_64' 等)
+   */
+  async getCpuArchitecture(serial: string): Promise<string> {
+    try {
+      const properties = await this.getProperties(serial)
+      const cpuAbi = properties.get('ro.product.cpu.abi')
+      return cpuAbi as string
+    } catch (error) {
+      console.error('获取 CPU 架构时出错：', error)
+      throw error
+    }
+  }
+
+  /**
+   * 获取设备的 CPU 型号信息
+   * @param serial 设备序列号
+   * @returns CPU 型号信息
+   */
+  async getCpuModel(serial: string): Promise<string> {
+    try {
+      const cpuInfo = await this.client.shell(serial, 'cat /proc/cpuinfo')
+
+      // 在不同设备上，CPU 型号信息可能在不同的字段中
+      const modelMatches =
+        cpuInfo.match(/Hardware\s*:\s*(.*)/i) ||
+        cpuInfo.match(/Model name\s*:\s*(.*)/i) ||
+        cpuInfo.match(/Processor\s*:\s*(.*)/i)
+
+      if (modelMatches && modelMatches[1]) {
+        return modelMatches[1].trim()
+      }
+
+      return '未知 CPU 型号'
+    } catch (error) {
+      console.error('获取 CPU 型号时出错：', error)
+      return '获取失败'
+    }
+  }
 }
 
 export default Utils
