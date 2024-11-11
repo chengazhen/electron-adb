@@ -40,8 +40,8 @@ class Utils {
    */
   async getAndroidVersion(serial: string): Promise<number> {
     try {
-      const properties = await this.client.listProperties(serial)
-      const sdkVersion = parseInt(properties['ro.build.version.sdk'], 10)
+      const properties = await this.getProperties(serial)
+      const sdkVersion = parseInt(properties.get('ro.build.version.sdk') as string, 10)
       console.log(`Android SDK 版本：${sdkVersion}`)
       return sdkVersion
     } catch (error) {

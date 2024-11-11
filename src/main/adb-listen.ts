@@ -6,8 +6,8 @@ import fs from 'fs'
 import path from 'path'
 import { Conf } from 'electron-conf/main'
 import { client } from './adb-instance'
-// import aapt from '../../resources/aapt.exe?asset&asarUnpack'
-import aapt from '../../resources/aapt2.exe?asset&asarUnpack'
+import { getAapt2 } from './get-aapt2'
+
 import AdmZip from 'adm-zip'
 import { getMarketingName } from './csv-reader'
 import { handleResponse } from './responseHandler'
@@ -29,7 +29,7 @@ ipcMain.handle(
 ipcMain.handle(
   'installApp',
   handleResponse(async (_, apkPath: string, deviceId: string) => {
-    await client.install(deviceId, apkPath)
+    await utils.smartInstall(deviceId, apkPath)
     return { message: 'App installed successfully' }
   })
 )
@@ -201,6 +201,7 @@ ipcMain.handle(
       // 判断本地是否已经有了APK文件
       await client.pullFile(deviceId, trimmedApkPath, localApkPath)
 
+      const aapt = getAapt2()
       const { stdout: aaptInfo } = await execAsync(`${aapt} dump badging ${localApkPath}`)
       const zhMatch = aaptInfo.match(/application-label-zh_CN:'([^']*)'/)
       const enMatch = aaptInfo.match(/application-label:'([^']*)'/)
@@ -236,13 +237,14 @@ ipcMain.handle(
     try {
       if (port) {
         const result = await client.connect(ip, port)
-        return { success: true, data: result }
+        return result
       } else {
         const result = await client.connect(ip)
-        return { success: true, data: result }
+        return result
       }
     } catch (error) {
-      return { success: false, error: '连接失败' }
+      console.error('连接失败:', error)
+      throw error
     }
   })
 )

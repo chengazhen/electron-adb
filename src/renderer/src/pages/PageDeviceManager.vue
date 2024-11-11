@@ -68,8 +68,7 @@ const goToUsbDebugGuide = () => {
 const remoteConnectDrawerVisible = ref(false)
 const handleRemoteConnect = async (ip: string, port?: number) => {
   try {
-    await handleResponse(window.api.connectToRemoteDevice(ip, port))
-    ElMessage.success('远程连接成功')
+    await handleResponse(window.api.connectToRemoteDevice(ip, port), '远程连接成功')
     remoteConnectDrawerVisible.value = false
     await deviceStore.fetchDevices()
   } catch (error) {
