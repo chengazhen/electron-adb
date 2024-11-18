@@ -27,8 +27,6 @@
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
     "adb-ts": "^6.0.0",
-    "adbkit": "^2.11.1",
-    "adbkit-apkreader": "^3.2.0",
     "adm-zip": "^0.5.16",
     "csv-parse": "^5.5.6",
     "echarts": "^5.5.1",
